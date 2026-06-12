@@ -80,6 +80,14 @@ header{
   line-height:1;
 }
 .hdr-btn:hover,.hdr-btn:active{background:var(--surface2);color:var(--text)}
+.lang-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--muted);font-size:.72rem;font-weight:700;
+  cursor:pointer;padding:4px 8px;border-radius:7px;
+  transition:background .15s,color .15s;font-family:inherit;
+}
+.lang-btn:hover{background:var(--surface3);color:var(--text)}
+.lang-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
 
 /* ── Messages ── */
 #msgs{
@@ -518,6 +526,11 @@ header{
     <button class="hdr-btn" id="desktop-btn" onclick="toggleDesktop()" title="Desktop view">🖥️</button>
     <button class="hdr-btn" id="tts-btn" onclick="toggleTTS()" title="Toggle TTS">🔊</button>
     <button class="hdr-btn" onclick="resetSession()" title="New chat">⟳</button>
+    <span style="display:flex;gap:4px;margin-left:4px">
+      <button class="lang-btn active" data-lang="en-US" onclick="switchSTTLang('en-US')" title="English">EN</button>
+      <button class="lang-btn" data-lang="fr-FR" onclick="switchSTTLang('fr-FR')" title="Français">FR</button>
+      <button class="lang-btn" data-lang="ar-LB" onclick="switchSTTLang('ar-LB')" title="العربية">ع</button>
+    </span>
   </div>
 </header>
 
@@ -697,7 +710,6 @@ function send(text){
   // Only start a new typing indicator if none is active
   if(!typingEl) startTyping();
   setBusy(true);
-  if(typeof _switchLang === 'function') _switchLang(msg);
   ws.send(JSON.stringify({type:'message', text:msg}));
 }
 
@@ -835,30 +847,41 @@ function toggleTTS(){
 
 // ── TTS — browser-native speechSynthesis (zero network latency) ───────────
 const _synth = window.speechSynthesis;
-let _ttsVoice = null;
+let _voiceMap = { en: null, fr: null, ar: null };
 
-function _pickVoice(){
-  const voices = _synth.getVoices();
-  // Prefer: Google US English > Microsoft Aria/Guy (Edge) > any en-US
-  _ttsVoice =
-    voices.find(v => v.name === 'Google US English') ||
-    voices.find(v => v.name.includes('Aria'))        ||
-    voices.find(v => v.name.includes('Microsoft') && v.lang === 'en-US') ||
-    voices.find(v => v.lang === 'en-US')             ||
-    voices.find(v => v.lang.startsWith('en'))        ||
-    null;
+function _buildVoiceMap(){
+  const v = _synth.getVoices();
+  // English
+  _voiceMap.en =
+    v.find(x => x.name === 'Google US English') ||
+    v.find(x => x.name.includes('Aria')) ||
+    v.find(x => x.lang === 'en-US') ||
+    v.find(x => x.lang.startsWith('en')) || null;
+  // French — prefer native French voices
+  _voiceMap.fr =
+    v.find(x => x.name.includes('Denise') && x.lang.startsWith('fr')) ||
+    v.find(x => x.lang === 'fr-FR') ||
+    v.find(x => x.lang.startsWith('fr')) || null;
+  // Arabic — prefer Lebanese then any Arabic
+  _voiceMap.ar =
+    v.find(x => x.lang === 'ar-LB') ||
+    v.find(x => x.lang === 'ar-SA') ||
+    v.find(x => x.lang === 'ar-AE') ||
+    v.find(x => x.lang.startsWith('ar')) || null;
 }
-_synth.onvoiceschanged = _pickVoice;
-_pickVoice();
+_synth.onvoiceschanged = _buildVoiceMap;
+_buildVoiceMap();
 
-let _ttsMuted = false;    // set by "shut up" — drops incoming voice until next user message
-let _lastSpokeAt = 0;     // timestamp MAX last spoke — used to ignore mic echo of its own voice
-
-// True while MAX is talking (or just finished) — the mic should ignore audio then,
-// otherwise it transcribes MAX's own TTS (and background music) back as commands.
-function maxIsSpeaking(){
-  return _synth.speaking || (Date.now() - _lastSpokeAt) < 800;
+// Detect language of a piece of text and return 'ar'|'fr'|'en'
+function _detectLang(text){
+  if(/[؀-ۿݐ-ݿ]/.test(text)) return 'ar';
+  if(/\b(je|tu|il|elle|nous|vous|ils|elles|bonjour|merci|oui|non|voici|voilà|avec|pour|dans|sur|les|une|des|est|sont|prix|trafic|aujourd|demain|semaine|mois|heure|nouvelle|comment|pourquoi|quand|où|quoi|quel|quelle)\b/i.test(text)) return 'fr';
+  return 'en';
 }
+
+let _ttsMuted = false;
+let _lastSpokeAt = 0;
+function maxIsSpeaking(){ return _synth.speaking || (Date.now()-_lastSpokeAt)<800; }
 
 function enqueueTTS(text){
   if(!ttsOn || _ttsMuted) return;
@@ -869,13 +892,16 @@ function enqueueTTS(text){
     .replace(/https?:\/\/\S+/g,'link')
     .replace(/[*_#\-]/g,'')
     .replace(/\n+/g,' ')
-    .trim().substring(0, 500);
+    .trim().substring(0,500);
   if(!clean) return;
+  const lang = _detectLang(clean);
+  const voice = _voiceMap[lang] || _voiceMap.en;
   const utt = new SpeechSynthesisUtterance(clean);
-  utt.rate  = 1.08;   // slightly faster than default
-  utt.pitch = 1.0;
+  utt.lang   = lang==='ar'?'ar-SA':lang==='fr'?'fr-FR':'en-US';
+  utt.rate   = lang==='ar'?1.0:1.08;
+  utt.pitch  = 1.0;
   utt.volume = 1.0;
-  if(_ttsVoice) utt.voice = _ttsVoice;
+  if(voice) utt.voice = voice;
   utt.onstart = ()=>{ _lastSpokeAt = Date.now(); };
   utt.onend   = ()=>{ _lastSpokeAt = Date.now(); };
   _synth.speak(utt);
@@ -890,111 +916,116 @@ function stopTTS(){
 function playTTS(){} // no-op — speechSynthesis queues internally
 
 // ── STT / Voice ────────────────────────────────────────────────────────────
-let _restartTimer = null;   // debounce handle for recognition restarts
-let _gestureAdded = false;  // prevent duplicate gesture listeners
-let _micState = '';         // track current state to suppress no-op setMicState calls
+let _restartTimer = null;
+let _gestureAdded = false;
+let _micState = '';
+let _sttLang = 'en-US';  // current STT language; changed by language selector buttons
+
+// Wake words in all three languages
+const WAKE_WORDS = ['max','ماكس','maks'];
+
+function _hasWakeWord(low){
+  return WAKE_WORDS.some(w => low.includes(w));
+}
+function _stripWakeWord(text){
+  let t = text;
+  for(const w of WAKE_WORDS){ t = t.replace(new RegExp(w,'gi'),''); }
+  return t.trim();
+}
+
+function _makeRecognizer(lang){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return null;
+  const r = new SR();
+  r.continuous = true;
+  r.interimResults = true;
+  r.lang = lang;
+  return r;
+}
+
+function switchSTTLang(lang){
+  // lang: 'en-US' | 'fr-FR' | 'ar-LB'
+  if(_sttLang === lang) return;
+  _sttLang = lang;
+  // Highlight active lang button
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.lang===lang);
+  });
+  // Restart recognition in new language
+  if(listening && recog){
+    try{ recog.stop(); }catch{}
+    // onend will rebuild recognizer with _sttLang
+  }
+}
 
 function initSpeech(){
   if(recog) return;
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR) return;
-  recog=new SR();
-  recog.continuous=true;
-  recog.interimResults=true;
-  recog.lang='en-US';   // default; switched dynamically below
+  _buildRecognizer();
+  tryAutoStart();
+}
 
-  // Detect Arabic/French from typed or spoken text and switch STT language
-  function _switchLang(text){
-    const hasArabic = /[؀-ۿ]/.test(text);
-    const hasFrench = /\b(je|tu|il|elle|nous|vous|bonjour|merci|oui|non|prix|trafic|est|avec|pour|dans|sur|les|une?|des)\b/i.test(text);
-    const newLang = hasArabic ? 'ar-LB' : hasFrench ? 'fr-FR' : 'en-US';
-    if(recog.lang !== newLang){
-      recog.lang = newLang;
-      // restart recognition to apply new language
-      try{ recog.stop(); }catch{}
-    }
-  }
+function _buildRecognizer(){
+  recog = _makeRecognizer(_sttLang);
+  if(!recog) return;
 
-  let finalT='', silTimer=null;
+  let finalT = '', silTimer = null;
 
-  recog.onresult=e=>{
-    // Ignore anything heard while MAX is talking — stops the mic from transcribing
-    // MAX's own TTS (or background music) and firing it back as a command.
+  recog.onresult = e => {
     if(maxIsSpeaking()){ finalT=''; return; }
 
-    let interim='';
+    let interim = '';
     for(let i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal) finalT+=e.results[i][0].transcript;
-      else interim=e.results[i][0].transcript;
+      if(e.results[i].isFinal) finalT += e.results[i][0].transcript;
+      else interim = e.results[i][0].transcript;
     }
-    const full=(finalT+interim).trim();
+    const full = (finalT+interim).trim();
+    const low  = full.toLowerCase();
 
-    // Wake word detection
-    const low=full.toLowerCase();
-    const maxIdx=low.indexOf('max');
-    if(!wakeMode && maxIdx!==-1){
-      const after=full.slice(maxIdx+3).trim();
-      finalT='';
+    if(!wakeMode && _hasWakeWord(low)){
+      const after = _stripWakeWord(full);
+      finalT = '';
       activateWake();
-      if(after.length>2){
-        document.getElementById('vtext').textContent=after;
+      if(after.length > 2){
+        document.getElementById('vtext').textContent = after;
         clearTimeout(silTimer);
-        silTimer=setTimeout(()=>sendVoice(after),1300);
+        silTimer = setTimeout(()=>sendVoice(after), 1300);
       }
       return;
     }
 
     if(wakeMode){
-      document.getElementById('vtext').textContent=full||'Listening…';
+      document.getElementById('vtext').textContent = full || 'Listening…';
       clearTimeout(silTimer);
       if(finalT.trim()){
-        silTimer=setTimeout(()=>{
-          const t=finalT.trim(); finalT='';
+        silTimer = setTimeout(()=>{
+          const t = finalT.trim(); finalT = '';
           sendVoice(t);
-        },1500);
+        }, 1500);
       }
     } else {
-      document.getElementById('tinput').value=full;
+      document.getElementById('tinput').value = full;
       autoResize(document.getElementById('tinput'));
     }
   };
 
-  recog.onerror=e=>{
-    // 'aborted' = we called start() before the previous session fully closed.
-    // Totally normal during rapid restarts — never change UI state for this.
+  recog.onerror = e => {
     if(e.error==='aborted' || e.error==='no-speech') return;
-
-    if(e.error==='not-allowed'||e.error==='service-not-allowed'){
-      // Mic permission denied — stop trying
-      setMicState('idle');
-      listening=false;
-    } else {
-      // Other errors (network, audio-capture, etc.) — stay in wake state,
-      // let onend handle the restart without flickering the button
+    if(e.error==='not-allowed' || e.error==='service-not-allowed'){
+      setMicState('idle'); listening = false;
     }
   };
 
-  recog.onend=()=>{
+  recog.onend = () => {
     if(!listening) return;
-    // Debounce restart: wait 300ms so the previous session fully tears down
-    // before calling start() again, which prevents the 'aborted' error loop.
     clearTimeout(_restartTimer);
     _restartTimer = setTimeout(()=>{
       if(!listening) return;
-      finalT = '';  // clear stale transcript on restart
-      try{
-        recog.start();
-      }catch(err){
-        // On mobile, start() can fail if browser requires a fresh gesture.
-        // Fall back to idle and let the user tap the mic button.
-        listening = false;
-        setMicState('idle');
-      }
+      finalT = '';
+      // If language changed, rebuild the recognizer with the new lang
+      if(recog.lang !== _sttLang){ _buildRecognizer(); }
+      try{ recog.start(); }catch(err){ listening=false; setMicState('idle'); }
     }, 300);
   };
-
-  // Try auto-start immediately (works if mic permission already granted)
-  tryAutoStart();
 }
 
 function tryAutoStart(){

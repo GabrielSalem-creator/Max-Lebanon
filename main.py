@@ -59,7 +59,7 @@ LLM_URL   = os.environ.get("LLM_URL",   "https://chat.good.hidns.vip/api/openai/
 LLM_MODEL = os.environ.get("LLM_MODEL", "openai/gpt-oss-120b")
 
 PLAN_RE  = re.compile(r"MAX_PLAN:\s*(\{[\s\S]*?\})", re.MULTILINE)
-SENT_RE  = re.compile(r"(.+?[.!?]+)\s+")
+SENT_RE  = re.compile(r"(.+?[.!?؟।]+)\s+")  # includes Arabic ? mark
 INPUT_RE = re.compile(
     r"\b(enter|type|provide|input|give|tell|submit|paste|need)\b.{0,140}"
     r"\b(code|password|token|key|pin|otp|captcha|2fa|verification|confirm|secret|auth)\b",
