@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAX — Maximize Your Life · AI for Lebanon</title>
+<meta name="description" content="MAX is an ultra-fast voice AI assistant built for Lebanon. Talk, don't look at your phone — safer roads, live security alerts, fuel prices, traffic, events and more. English, French &amp; Arabic.">
+<meta property="og:title" content="MAX — Maximize Your Life">
+<meta property="og:description" content="The hands-free AI assistant for Lebanon. Drive safer, stay informed, lose no time.">
+<meta property="og:image" content="./img/beirut.jpg">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Inter:wght@400;500;600&family=Noto+Kufi+Arabic:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05080f; --bg2:#0a1120; --ink:#eef3ff; --muted:#9fb0cc;
+    --red:#ed1c24; --green:#10b04f; --gold:#ffd66e;
+    --glass:rgba(255,255,255,.05); --line:rgba(255,255,255,.10);
+    --radius:22px; --max:1160px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);
+    overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,.brand{font-family:'Sora',sans-serif;letter-spacing:-.02em}
+  a{color:inherit;text-decoration:none}
+  .ar{font-family:'Noto Kufi Arabic',sans-serif;direction:rtl}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+  .grad{background:linear-gradient(100deg,var(--red),var(--gold) 48%,var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* nav */
+  header{position:sticky;top:0;z-index:60;backdrop-filter:blur(16px);background:rgba(5,8,15,.6);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:1.3rem}
+  .brand .dot{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--red),var(--green));font-size:1.05rem;box-shadow:0 6px 20px #ed1c2440}
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-links a{color:var(--muted);font-size:.94rem;font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:var(--ink)}
+  .langs{display:flex;gap:6px;margin-right:6px}
+  .langs span{font-size:.72rem;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:3px 8px}
+  .btn{display:inline-flex;align-items:center;gap:9px;border:none;cursor:pointer;font-family:'Sora';font-weight:700;
+    font-size:1rem;padding:14px 28px;border-radius:14px;background:linear-gradient(120deg,var(--red),var(--green));color:#fff;
+    box-shadow:0 10px 30px #ed1c2433,0 4px 12px #10b04f33;transition:transform .18s,box-shadow .18s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px #ed1c2455,0 6px 18px #10b04f44}
+  .btn.ghost{background:var(--glass);border:1px solid var(--line);box-shadow:none;color:var(--ink)}
+  .btn.sm{padding:10px 20px;font-size:.92rem}
+
+  /* hero */
+  .hero{position:relative;min-height:92vh;display:flex;align-items:center;overflow:hidden}
+  .hero-bg{position:absolute;inset:0;z-index:-2;background:url('./img/beirut.jpg') center/cover no-repeat;
+    transform:scale(1.08);filter:saturate(1.1)}
+  .hero-bg::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(5,8,15,.55),rgba(5,8,15,.82) 60%,var(--bg)),
+      radial-gradient(900px 500px at 70% 30%,#ed1c2422,transparent)}
+  .hero-inner{padding:60px 0 90px}
+  .pill{display:inline-flex;gap:8px;align-items:center;font-size:.82rem;color:var(--ink);
+    border:1px solid var(--line);background:rgba(0,0,0,.35);padding:8px 16px;border-radius:100px;margin-bottom:26px;backdrop-filter:blur(6px)}
+  .pill .live{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 #10b04f88}70%{box-shadow:0 0 0 10px #10b04f00}100%{box-shadow:0 0 0 0 #10b04f00}}
+  .hero h1{font-size:clamp(3.2rem,10vw,7rem);font-weight:800;line-height:.94;margin-bottom:14px}
+  .hero .tag{font-family:'Sora';font-weight:300;font-size:clamp(1.25rem,3.6vw,1.9rem);color:var(--ink);margin-bottom:10px}
+  .hero .tags-ml{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:1rem;margin-bottom:26px}
+  .hero p.lead{max-width:600px;color:#d6e2f5;font-size:1.15rem;margin-bottom:34px}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .micro{margin-top:16px;font-size:.85rem;color:var(--muted)}
+
+  /* section */
+  section{padding:90px 0;position:relative}
+  .eyebrow{font-family:'Sora';font-weight:700;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  .sec-head{max-width:720px;margin:0 auto 56px;text-align:center}
+  .sec-head h2{font-size:clamp(2rem,5vw,3.1rem);font-weight:800;margin-bottom:14px;line-height:1.08}
+  .sec-head p{color:var(--muted);font-size:1.08rem}
+
+  /* safety split */
+  .split{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center}
+  .split img{width:100%;border-radius:24px;border:1px solid var(--line);box-shadow:0 30px 80px #00000060}
+  .split h2{font-size:clamp(1.9rem,4.5vw,2.8rem);font-weight:800;line-height:1.1;margin-bottom:18px}
+  .split p{color:var(--muted);font-size:1.06rem;margin-bottom:18px}
+  .statline{display:flex;gap:26px;flex-wrap:wrap;margin-top:8px}
+  .stat b{font-family:'Sora';font-size:2rem;display:block;background:linear-gradient(120deg,var(--red),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat span{font-size:.86rem;color:var(--muted)}
+
+  /* features */
+  .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .feat{background:var(--glass);border:1px solid var(--line);border-radius:var(--radius);padding:30px 26px;
+    transition:transform .25s,border-color .25s,background .25s;position:relative;overflow:hidden}
+  .feat:hover{transform:translateY(-6px);border-color:#ffffff2a;background:rgba(255,255,255,.07)}
+  .feat .ic{width:54px;height:54px;border-radius:15px;display:grid;place-items:center;font-size:1.6rem;margin-bottom:18px;
+    background:linear-gradient(135deg,#ffffff14,#ffffff05);border:1px solid var(--line)}
+  .feat h3{font-size:1.2rem;margin-bottom:8px}
+  .feat p{color:var(--muted);font-size:.96rem}
+  .feat .tagx{display:inline-block;margin-top:14px;font-size:.74rem;color:var(--gold);border:1px solid #ffd66e44;border-radius:8px;padding:3px 9px}
+
+  /* cedar band */
+  .band{position:relative;border-radius:30px;overflow:hidden;border:1px solid var(--line);min-height:340px;display:flex;align-items:center}
+  .band-bg{position:absolute;inset:0;z-index:-1;background:url('./img/cedar.jpg') center/cover}
+  .band-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,8,15,.92),rgba(5,8,15,.55))}
+  .band-in{padding:48px 40px;max-width:620px}
+  .band h2{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:14px}
+  .band p{color:#d6e2f5;font-size:1.05rem}
+
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;counter-reset:s}
+  .step{position:relative;padding:32px 26px;border:1px solid var(--line);border-radius:var(--radius);background:var(--glass)}
+  .step::before{counter-increment:s;content:counter(s);position:absolute;top:-18px;left:26px;width:44px;height:44px;border-radius:12px;
+    display:grid;place-items:center;font-family:'Sora';font-weight:800;background:linear-gradient(135deg,var(--red),var(--green));box-shadow:0 8px 22px #ed1c2440}
+  .step h3{margin:14px 0 8px;font-size:1.18rem}
+  .step p{color:var(--muted);font-size:.96rem}
+
+  /* waitlist */
+  .wait{text-align:center;border:1px solid var(--line);border-radius:34px;padding:72px 28px;position:relative;overflow:hidden;
+    background:radial-gradient(700px 320px at 50% 0%,#10b04f1f,transparent),linear-gradient(180deg,#ffffff0a,#ffffff03)}
+  .wait h2{font-size:clamp(2.2rem,6vw,3.4rem);font-weight:800;margin-bottom:12px}
+  .wait p{color:var(--muted);font-size:1.1rem;max-width:520px;margin:0 auto 30px}
+  .form{display:flex;gap:10px;max-width:480px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .form input{flex:1;min-width:240px;padding:16px 20px;border-radius:14px;border:1px solid var(--line);
+    background:rgba(0,0,0,.35);color:var(--ink);font-size:1rem;font-family:inherit}
+  .form input:focus{outline:none;border-color:#10b04f88;box-shadow:0 0 0 3px #10b04f22}
+  .form .btn{white-space:nowrap}
+  .formnote{margin-top:14px;font-size:.84rem;color:var(--muted);min-height:20px}
+  .formnote.ok{color:var(--green)} .formnote.err{color:var(--red)}
+
+  /* docs (inverted) */
+  .docs{background:#f5f7fc;color:#16203a;border-radius:34px;margin:30px 0;padding:64px 0}
+  .docs .wrap{max-width:880px}
+  .docs .eyebrow{color:#c0392b}
+  .docs h2{font-size:clamp(1.9rem,5vw,2.7rem);font-weight:800;margin-bottom:8px;color:#0b1220}
+  .docs .sub{color:#51607a;margin-bottom:36px}
+  .doc-block{border-top:1px solid #dde3ee;padding:26px 0}
+  .doc-block h3{font-size:1.25rem;margin-bottom:10px;color:#0b1220;display:flex;gap:10px;align-items:center}
+  .doc-block p,.doc-block li{color:#3a4761;font-size:.98rem}
+  .doc-block ul{margin:8px 0 0 18px;display:flex;flex-direction:column;gap:6px}
+  .kbd{font-family:ui-monospace,monospace;background:#e7ecf6;border:1px solid #d3dbeb;border-radius:6px;padding:2px 8px;font-size:.85rem;color:#0b1220}
+
+  footer{border-top:1px solid var(--line);margin-top:80px;padding:40px 0;color:var(--muted);font-size:.9rem}
+  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+
+  @media(max-width:900px){
+    .feats,.steps{grid-template-columns:1fr}
+    .split{grid-template-columns:1fr}
+    .nav-links{display:none}
+    section{padding:64px 0}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="brand"><span class="dot">✦</span> MAX</div>
+    <div class="nav-links">
+      <a href="#safety">Road safety</a>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#docs">Docs</a>
+      <span class="langs"><span>EN</span><span>FR</span><span>ع</span></span>
+    </div>
+    <a class="btn sm" href="#waitlist">Join waitlist →</a>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="wrap hero-inner reveal">
+      <span class="pill"><span class="live"></span> Live • Built in Lebanon 🇱🇧 • EN · FR · عربي</span>
+      <h1>MAX</h1>
+      <div class="tag">Maximize your <span class="grad">life</span>.</div>
+      <div class="tags-ml">
+        <span>Maximisez votre vie.</span>
+        <span class="ar">عيش حياتك بأقصى طاقة.</span>
+      </div>
+      <p class="lead">The ultra-fast voice assistant for Lebanon. Talk to it — and keep your eyes on the road.
+        Live security alerts, traffic, fuel prices, events and your whole day, hands-free.</p>
+      <div class="cta-row">
+        <a class="btn" href="#waitlist">Join the waitlist →</a>
+        <a class="btn ghost" href="https://max.vdo-x.art" target="_blank" rel="noopener">Enter MAX</a>
+      </div>
+      <p class="micro">No app to install · works on phone &amp; laptop · just speak</p>
+    </div>
+  </section>
+
+  <!-- ROAD SAFETY -->
+  <section id="safety">
+    <div class="wrap split">
+      <img class="reveal" src="./img/road.jpg" alt="Focused driver on a Lebanese coastal road at dusk">
+      <div class="reveal">
+        <div class="eyebrow">Eyes on the road</div>
+        <h2>Don't look at your phone. <span class="grad">Just talk.</span></h2>
+        <p>Most distracted-driving crashes start with a glance at a screen. MAX removes the screen from the equation —
+          ask out loud for the safest route, live traffic, or whether the road ahead is clear, and it answers in your voice.</p>
+        <p>Fewer glances. Fewer accidents. More time, hands free.</p>
+        <div class="statline">
+          <div class="stat"><b>0</b><span>screens to look at while driving</span></div>
+          <div class="stat"><b>3</b><span>languages: English, French, Arabic</span></div>
+          <div class="stat"><b>24/7</b><span>live security &amp; traffic awareness</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Built for how you live here</div>
+        <h2>One assistant for daily life in Lebanon</h2>
+        <p>Every one of these is a fast, predefined skill — MAX already knows how to do it, so it just gets it done.</p>
+      </div>
+      <div class="feats">
+        <div class="feat reveal"><div class="ic">🛡️</div><h3>Security &amp; safety alerts</h3>
+          <p>Tracks live incidents across Lebanon and warns you out loud, so you stay cautious and avoid danger zones.</p><span class="tagx">LiveUAMap · real-time</span></div>
+        <div class="feat reveal"><div class="ic">🚦</div><h3>Traffic &amp; safe routes</h3>
+          <p>Ask "is there traffic on my way?" and MAX tells you the clearest, safest road — without you touching the phone.</p><span class="tagx">Hands-free</span></div>
+        <div class="feat reveal"><div class="ic">⛽</div><h3>Daily fuel prices</h3>
+          <p>Instant LBP rates for 95 &amp; 98 octane and diesel, pulled fresh — no more guessing at the pump.</p><span class="tagx">Updated daily</span></div>
+        <div class="feat reveal"><div class="ic">🎉</div><h3>Summer 2026 events</h3>
+          <p>Byblos, Beiteddine, Baalbeck festivals and concerts — ask what's on, and add it to your calendar in a breath.</p><span class="tagx">Local culture</span></div>
+        <div class="feat reveal"><div class="ic">💬</div><h3>WhatsApp, hands-free</h3>
+          <p>"Send a WhatsApp to Dad" — MAX opens it, finds the chat and sends, all by voice.</p><span class="tagx">Voice → action</span></div>
+        <div class="feat reveal"><div class="ic">📊</div><h3>Slides &amp; images on demand</h3>
+          <p>Full presentations and AI images, generated and delivered to your email or Telegram in seconds.</p><span class="tagx">Create instantly</span></div>
+        <div class="feat reveal"><div class="ic">📅</div><h3>Your calendar</h3>
+          <p>"What's on my calendar?" or "add this activity" — answered and updated instantly.</p><span class="tagx">Plan by voice</span></div>
+        <div class="feat reveal"><div class="ic">🗣️</div><h3>Speaks your language</h3>
+          <p>Understands and replies in English, French and Lebanese Arabic — switch mid-sentence, MAX keeps up.</p><span class="tagx">EN · FR · عربي</span></div>
+        <div class="feat reveal"><div class="ic">⚡</div><h3>Blazing fast</h3>
+          <p>It remembers how it did a task and replays it next time — milliseconds instead of minutes.</p><span class="tagx">Trajectory memory</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CEDAR BAND -->
+  <section>
+    <div class="wrap">
+      <div class="band reveal">
+        <div class="band-bg"></div>
+        <div class="band-in">
+          <div class="eyebrow">Rooted in Lebanon</div>
+          <h2>Made here. <span class="grad">For here.</span></h2>
+          <p>MAX isn't a generic assistant with a Lebanese sticker. It's tuned to the roads, the regions, the prices and
+            the rhythm of life in Lebanon — and it speaks the way you do.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how">
+    <div class="wrap">
+      <div class="sec-head reveal"><div class="eyebrow">How it works</div><h2>Three words and you're running</h2></div>
+      <div class="steps">
+        <div class="step reveal"><h3>Open MAX</h3><p>Tap "Enter MAX" — it runs in your browser on any phone or laptop. Nothing to install.</p></div>
+        <div class="step reveal"><h3>Say "MAX"</h3><p>Speak in English, French or Arabic, like you'd talk to a friend. It answers in seconds.</p></div>
+        <div class="step reveal"><h3>It's done</h3><p>It informs, navigates or creates — and tells you the moment it's finished.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAITLIST -->
+  <section id="waitlist">
+    <div class="wrap">
+      <div class="wait reveal">
+        <div class="eyebrow">Be first</div>
+        <h2>Join the <span class="grad">waitlist</span></h2>
+        <p>MAX is rolling out to Lebanon. Drop your email and we'll get you in early.</p>
+        <form class="form" id="waitForm" onsubmit="return joinWaitlist(event)">
+          <input type="email" id="email" placeholder="you@email.com" required autocomplete="email">
+          <button class="btn" type="submit" id="waitBtn">Join waitlist →</button>
+        </form>
+        <div class="formnote" id="formNote"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOCS / README -->
+  <section id="docs">
+    <div class="wrap">
+      <div class="docs">
+        <div class="wrap">
+          <div class="eyebrow">Documentation</div>
+          <h2>What MAX is, and how it keeps you safe</h2>
+          <p class="sub">The full picture — capabilities, languages, speed and privacy.</p>
+
+          <div class="doc-block">
+            <h3>🎯 The mission</h3>
+            <p>Protect Lebanese citizens through hands-free automation: cut distracted-driving accidents by letting people
+              talk to MAX instead of looking at a screen, surface real-time security alerts, and handle everyday digital
+              tasks so people save time and stay safe.</p>
+          </div>
+
+          <div class="doc-block">
+            <h3>🧩 Capabilities</h3>
+            <ul>
+              <li><b>Voice, three languages</b> — English, French and Lebanese Arabic, for both listening and speaking.</li>
+              <li><b>Road &amp; security</b> — live traffic, safest routes, and real-time incident/security awareness across Lebanon.</li>
+              <li><b>Local life</b> — daily fuel prices, Lebanon news, restaurants with hours &amp; numbers, and Summer 2026 events.</li>
+              <li><b>Productivity</b> — WhatsApp by voice, calendar read &amp; add, PowerPoints, AI images and video.</li>
+              <li><b>Fast-path skills</b> — common tasks are predefined, so they run instantly instead of being reasoned from scratch.</li>
+            </ul>
+          </div>
+
+          <div class="doc-block">
+            <h3>⚡ Speed by design</h3>
+            <p>MAX uses <b>trajectory memory</b>: the first time it does a task it works out the steps; every time after, it
+              recognises the request, replays the proven recipe and only changes the variables — dropping minutes to seconds.
+              It also tells you up front whether a task is new ("first time, give me a moment") or known ("done this before,
+              replaying now").</p>
+          </div>
+
+          <div class="doc-block">
+            <h3>🔒 Privacy &amp; security</h3>
+            <ul>
+              <li><b>Password-protected app</b> — <span class="kbd">max.vdo-x.art</span> is locked behind a login with a saved session, so no spam or abuse.</li>
+              <li><b>Human-in-the-loop logins</b> — when a site needs a password, you type it into a secure local prompt; MAX injects it straight into the page and <b>never</b> reads or stores it.</li>
+              <li><b>Local-first</b> — sensitive data and credentials stay on your machine, never in the AI's context.</li>
+            </ul>
+          </div>
+
+          <div class="doc-block">
+            <h3>🗣️ Try it</h3>
+            <p>Say things like: <span class="kbd">MAX, is there traffic to Jounieh?</span> · <span class="kbd">شو في أخبار اليوم؟</span> ·
+              <span class="kbd">MAX, prix de l'essence aujourd'hui</span> · <span class="kbd">MAX, add Beiteddine festival to my calendar</span>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="wrap">
+    <div class="wait reveal" style="background:radial-gradient(700px 320px at 50% 0%,#ed1c241f,transparent),linear-gradient(180deg,#ffffff0a,#ffffff03)">
+      <div class="eyebrow">Ready when you are</div>
+      <h2>Maximize your <span class="grad">life</span>.</h2>
+      <p>Your AI assistant for Lebanon — safer on the road, sharper in daily life.</p>
+      <div class="cta-row" style="justify-content:center">
+        <a class="btn" href="#waitlist">Join the waitlist →</a>
+        <a class="btn ghost" href="https://max.vdo-x.art" target="_blank" rel="noopener">Enter MAX</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="brand"><span class="dot">✦</span> MAX</div>
+    <div>Maximize your life · Built in Lebanon 🇱🇧 · EN · FR · عربي</div>
+    <a class="btn ghost sm" href="https://max.vdo-x.art" target="_blank" rel="noopener">Enter MAX →</a>
+  </div>
+</footer>
+
+<script>
+  // ── Waitlist → Discord webhook ──
+  const WEBHOOK = "https://discord.com/api/webhooks/1512840406096674986/PEIeqRaMrk-ihjgl59vnFUgFbDju9fgilUlGeiuk-0GSlrrd7YCuFAbiAju5JfVyClIn";
+  async function joinWaitlist(e){
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const note = document.getElementById('formNote');
+    const btn = document.getElementById('waitBtn');
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+      note.className='formnote err'; note.textContent='Please enter a valid email.'; return false;
+    }
+    btn.disabled=true; btn.textContent='Joining…'; note.className='formnote'; note.textContent='';
+    try{
+      await fetch(WEBHOOK,{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({content:`🚨 **New MAX Lebanon waitlist signup!**\n**Email:** ${email}\n**Time:** ${new Date().toISOString()}`})
+      });
+      note.className='formnote ok'; note.textContent="You're on the list! We'll be in touch soon. 🇱🇧";
+      document.getElementById('waitForm').reset();
+    }catch(err){
+      note.className='formnote err'; note.textContent='Something went wrong — please try again.';
+    }finally{
+      btn.disabled=false; btn.textContent='Join waitlist →';
+    }
+    return false;
+  }
+  // ── Scroll reveal ──
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

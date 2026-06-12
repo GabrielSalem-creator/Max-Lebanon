@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAX — Secure Login</title>
+<style>
+  :root{--bg:#05080f;--ink:#eef3ff;--red:#ed1c24;--green:#10b04f}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--ink);display:flex;align-items:center;justify-content:center;min-height:100vh}
+  .card{background:linear-gradient(180deg,#0a1220,#050c18);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:48px 40px;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .logo{text-align:center;margin-bottom:36px;font-size:1.3rem;font-weight:800;letter-spacing:-.02em}
+  .logo .dot{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--red),var(--green));display:inline-block;vertical-align:middle;margin-right:8px}
+  .form{display:flex;flex-direction:column;gap:18px}
+  .form input{padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.3);color:var(--ink);font-size:1rem;font-family:inherit}
+  .form input:focus{outline:none;border-color:#10b04f80;box-shadow:0 0 0 3px #10b04f20}
+  .form button{padding:14px;border:none;border-radius:12px;background:linear-gradient(120deg,var(--red),var(--green));color:#fff;font-weight:700;font-size:1rem;cursor:pointer;transition:transform .18s;font-family:inherit}
+  .form button:hover{transform:translateY(-2px)}
+  .msg{text-align:center;font-size:.9rem;color:#9fb0cc;min-height:20px}
+  .msg.err{color:#ed1c24}
+  .msg.ok{color:var(--green)}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo"><span class="dot"></span> MAX</div>
+  <form class="form" id="loginForm" onsubmit="return handleLogin(event)">
+    <input type="password" id="pwd" placeholder="Enter password" required autocomplete="current-password">
+    <button type="submit" id="btn">Enter MAX →</button>
+  </form>
+  <div class="msg" id="msg"></div>
+</body>
+<script>
+  const CORRECT_PASSWORD="lebanon2026";   // Change this to your desired password
+  const TOKEN_KEY="max_token";
+  function handleLogin(e){
+    e.preventDefault();
+    const pwd=document.getElementById('pwd').value;
+    const msg=document.getElementById('msg');
+    const btn=document.getElementById('btn');
+    if(pwd===CORRECT_PASSWORD){
+      const token=btoa(pwd+":"+(Date.now()+86400000));
+      localStorage.setItem(TOKEN_KEY,token);
+      msg.className='msg ok'; msg.textContent='Welcome! Redirecting…';
+      setTimeout(()=>{ window.location.href='/'; },600);
+    }else{
+      msg.className='msg err'; msg.textContent='Incorrect password.';
+      document.getElementById('pwd').value='';
+    }
+    return false;
+  }
+  // If already logged in, skip to main app
+  if(localStorage.getItem(TOKEN_KEY)){ window.location.href='/'; }
+</script>
+</html>

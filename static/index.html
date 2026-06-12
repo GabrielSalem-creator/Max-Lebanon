@@ -609,10 +609,18 @@ let isBusy = false;  // tracks if Claude is running (visual only, doesn't block)
 document.getElementById('welcome-time').textContent = fmt(new Date());
 function fmt(d){return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
 
+// ── Authentication ──────────────────────────────────────────────────────────
+function checkToken(){
+  const token = localStorage.getItem('max_token');
+  if(!token){ window.location.href='/login'; }
+  return token;
+}
+
 // ── WebSocket ──────────────────────────────────────────────────────────────
 function connect(){
+  const token = localStorage.getItem('max_token') || '';
   const proto = location.protocol==='https:'?'wss':'ws';
-  ws = new WebSocket(`${proto}://${location.host}/ws`);
+  ws = new WebSocket(`${proto}://${location.host}/ws?token=${encodeURIComponent(token)}`);
   ws.onopen = ()=>{
     setStatus(true);
     initSpeech();
@@ -1218,6 +1226,7 @@ function onDesktopClick(e){
 }
 
 // ── Init ───────────────────────────────────────────────────────────────────
+checkToken();
 connect();
 document.getElementById('tinput').focus();
 </script>

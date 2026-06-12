@@ -1,4 +1,5 @@
 import asyncio
+import base64 as _base64
 import json
 import re
 import sys
@@ -260,6 +261,11 @@ NEWS_FILE = Path(__file__).parent / "data" / "daily_news.json"
 
 app.mount("/img", StaticFiles(directory=str(STATIC / "img")), name="img")
 app.mount("/files", StaticFiles(directory=str(STATIC / "files")), name="files")
+
+
+@app.get("/login")
+async def login_page():
+    return HTMLResponse((STATIC / "login.html").read_text(encoding="utf-8"))
 
 
 @app.get("/")
@@ -792,28 +798,12 @@ def _task_status_report(room: str) -> Optional[str]:
     return None
 
 
-def _try_instant_answer(text: str) -> Optional[str]:
-    """Return a cached answer instantly (no LLM) if the question matches a known fact."""
+def _try_instant_fact(text: str) -> Optional[str]:
+    """Deterministic, UNAMBIGUOUS facts only — time, date, weather. Zero LLM, always
+    correct. These match on specific phrases so there are no false positives. The loose
+    Lebanon topics deliberately live in chatz's front door (answered only when truly asked)."""
     from datetime import datetime
     t = text.lower().strip()
-
-    # ── LEBANON cached topics (prefetched + pre-summarized) ──
-    lf = _fast_facts
-    if any(p in t for p in ("restaurant", "where to eat", "where can i eat", "place to eat", "food place", "dinner", "lunch spot")):
-        if lf.get("leb_restaurants"):
-            return lf["leb_restaurants"]
-    if any(p in t for p in ("things to do", "activity", "activities", "what to do", "fun", "summer", "cool to do", "go out")):
-        if lf.get("leb_activities"):
-            return lf["leb_activities"]
-    if any(p in t for p in ("safe", "danger", "region", "war", "avoid", "risky", "secure area")):
-        if lf.get("leb_safety"):
-            return lf["leb_safety"]
-    if any(p in t for p in ("lebanon news", "news lebanon", "what's happening", "whats happening", "headlines")):
-        if lf.get("leb_news"):
-            return lf["leb_news"]
-    if any(p in t for p in ("my schedule", "what do i have", "my day", "my plan", "agenda", "today and tomorrow", "what's on")):
-        if lf.get("schedule"):
-            return lf["schedule"]
 
     # TIME — computed live, zero latency
     if any(p in t for p in ("what time", "what's the time", "whats the time", "current time", "time is it", "time right now")):
@@ -833,6 +823,31 @@ def _try_instant_answer(text: str) -> Optional[str]:
         w = _fast_facts.get("weather")
         if w:
             return w
+
+    # ── LEBANON cached topics — TIGHT phrases only (no bare "fun"/"summer"/"safe"
+    #    that misfire on casual talk). Served from the pre-summarized cache. ──
+    lf = _fast_facts
+    if any(p in t for p in ("restaurant", "where to eat", "where can i eat",
+                            "place to eat", "places to eat", "good food", "food place")):
+        if lf.get("leb_restaurants"):
+            return lf["leb_restaurants"]
+    if any(p in t for p in ("things to do", "activities", "activity to do",
+                            "cool activity", "what to do", "cool to do", "to do in lebanon",
+                            "places to visit", "what to visit", "events in lebanon")):
+        if lf.get("leb_activities"):
+            return lf["leb_activities"]
+    if any(p in t for p in ("is it safe", "safe region", "safe area", "safe regions",
+                            "unsafe", "is it dangerous", "which regions", "areas to avoid")):
+        if lf.get("leb_safety"):
+            return lf["leb_safety"]
+    if any(p in t for p in ("lebanon news", "news in lebanon", "news about lebanon",
+                            "latest news", "headlines")):
+        if lf.get("leb_news"):
+            return lf["leb_news"]
+    if any(p in t for p in ("my schedule", "what do i have today", "what do i have tomorrow",
+                            "my agenda", "what's on today", "whats on today", "what's on my")):
+        if lf.get("schedule"):
+            return lf["schedule"]
 
     return None
 
@@ -937,8 +952,24 @@ def _kill_room_procs(room: str):
             pass
 
 
+def _validate_token(token: str) -> bool:
+    """Simple token validation — check if it's a valid base64 string (set by login)."""
+    if not token:
+        return False
+    try:
+        _base64.b64decode(token, validate=True)
+        return True
+    except Exception:
+        return False
+
+
 @app.websocket("/ws")
-async def ws_handler(ws: WebSocket, room: str = "default"):
+async def ws_handler(ws: WebSocket, room: str = "default", token: str = ""):
+    # Validate authentication token (from query string, set by login.html)
+    if not _validate_token(token):
+        await ws.close(code=4003, reason="Unauthorized — please log in")
+        return
+
     await ws.accept()
     ws._room = room   # tag socket so safe_send can mute TTS per-room
     rooms.setdefault(room, []).append(ws)
@@ -1052,30 +1083,20 @@ async def _chatz_front_door(text: str, ws: WebSocket, room: str) -> str:
     predefined facts ONLY when the user truly asked about them) or signals that a real
     task is needed. Returns 'answered', 'claude', or 'empty'."""
     recap = _summaries.get(room, "")
-    ctx = f"Recent conversation: {recap}\n" if recap else ""
-    facts = _facts_context()
+    ctx = f"Earlier: {recap}. " if recap else ""
+    # Short prompt — chat-z is a small model and ignores long, rule-heavy prompts
+    # (it falls back to canned greetings). Tasks are already gated out by _is_agentic,
+    # and Lebanon facts are served by _try_instant_fact, so this only needs to chat.
     prompt = (
-        "You are MAX, a warm, fast voice assistant for Gabriel in Lebanon. "
-        "Understand what the user actually means BEFORE you respond.\n\n"
-        "RULES:\n"
-        "1. If the user wants a real task done with tools — generate an image or video, send an email "
-        "or telegram, search the web, control the PC, open or click things, write code or files, build "
-        "a presentation, set a reminder, anything that needs an action — reply with EXACTLY this token "
-        "and nothing else: NEEDS_CLAUDE\n"
-        "2. Otherwise (small talk, a question, a comment) reply naturally in two or three spoken "
-        "sentences. No markdown, no lists, no symbols.\n"
-        "3. Use a fact below ONLY if the user genuinely asked about that exact topic. Never volunteer "
-        "Lebanon restaurants, activities, or tips unless they asked. A casual comment gets a casual "
-        "reply — for example 'tomorrow is the AI competition' just gets an enthusiastic short reply, "
-        "not a travel guide.\n\n"
-        f"LIVE FACTS:\n{facts}\n\n"
-        f"{ctx}User says: {text}"
+        "You are MAX, a warm voice assistant for Gabriel in Lebanon. "
+        "Reply to his message in two or three short, natural spoken sentences. "
+        "Be friendly and direct. No markdown. "
+        "Do not bring up Lebanon, travel, restaurants, or activities unless he asked about them. "
+        f"{ctx}\n\nGabriel: {text}"
     )
     reply = (await _chat_z(prompt, timeout=12)).strip()
     if not reply:
         return "empty"
-    if "NEEDS_CLAUDE" in reply.upper() and len(reply) < 40:
-        return "claude"
 
     await safe_send(ws, {"type": "event", "data": {
         "type": "assistant",
@@ -1141,6 +1162,85 @@ async def run_fast_chat(text: str, ws: WebSocket, room: str) -> bool:
     return True
 
 
+# ════════════════════ TASK MEMORY / TRAJECTORY CACHE ════════════════════
+# "Self-experience" learning: the first time MAX does a task it explores (slow);
+# every time after, it recognises the task and replays its proven recipe (fast).
+TRAJ_FILE = Path(__file__).parent / "data" / "trajectories.json"
+_TRAJ_STOP = {
+    "hey","max","can","you","could","would","please","the","a","an","to","of","for","me",
+    "my","and","on","in","it","this","that","with","is","are","do","i","want","need","get",
+    "got","now","just","at","be","let","us","we","could","some","also","then","so","there",
+}
+REPLAY_TH = 0.82   # near-identical → replay the cached command(s) directly, no Claude
+ADAPT_TH  = 0.55   # similar enough → let Claude follow the cached recipe (adapts variables)
+# Commands safe to auto-replay without Claude — our own tools + launching apps/sites.
+_SAFE_CMD_RE = re.compile(r'^\s*(python[0-9.]*\s+.*tools\.py|start\s+|cmd\s+/c\s+start|explorer)', re.I)
+
+
+def _traj_load() -> list:
+    try:
+        return json.loads(TRAJ_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+
+
+def _traj_save_all(items: list):
+    try:
+        TRAJ_FILE.parent.mkdir(exist_ok=True)
+        TRAJ_FILE.write_text(json.dumps(items, ensure_ascii=False, indent=1), encoding="utf-8")
+    except Exception:
+        pass
+
+
+def _traj_words(text: str) -> set:
+    """Content-word signature of a request — fillers stripped."""
+    toks = re.findall(r"[a-z0-9]+", text.lower())
+    return {w for w in toks if w not in _TRAJ_STOP and len(w) > 1}
+
+
+def _traj_match(text: str):
+    """Best matching past trajectory by content-word Jaccard similarity → (entry, score)."""
+    words = _traj_words(text)
+    if not words:
+        return None, 0.0
+    best, best_s = None, 0.0
+    for e in _traj_load():
+        ew = set(e.get("keywords", []))
+        if not ew:
+            continue
+        score = len(words & ew) / (len(words | ew) or 1)
+        if score > best_s:
+            best, best_s = e, score
+    return best, best_s
+
+
+def _traj_replayable(entry) -> bool:
+    cmds = entry.get("commands", [])
+    return bool(cmds) and all(_SAFE_CMD_RE.match(c or "") for c in cmds)
+
+
+def _traj_record(text: str, commands: list):
+    """Save (or refresh) a successful task's trajectory, deduped by high similarity."""
+    commands = [c.strip() for c in commands if c and c.strip()]
+    if not commands or len(commands) > 12:
+        return
+    items = _traj_load()
+    words = sorted(_traj_words(text))
+    wset = set(words)
+    for e in items:
+        ew = set(e.get("keywords", []))
+        if len(wset & ew) / (len(wset | ew) or 1) >= REPLAY_TH:
+            e.update(commands=commands, intent=text[:160],
+                     uses=e.get("uses", 0) + 1, last_used=int(time.time()))
+            _traj_save_all(items)
+            return
+    items.append({
+        "id": f"t{int(time.time()*1000)}", "intent": text[:160], "keywords": words,
+        "commands": commands, "uses": 1, "created": int(time.time()), "last_used": int(time.time()),
+    })
+    _traj_save_all(items[-200:])   # cap the cache
+
+
 async def run_msg(text: str, ws: WebSocket, room: str):
     if _stop.get(room):
         return  # room is stopped, ignore
@@ -1176,6 +1276,17 @@ async def run_msg(text: str, ws: WebSocket, room: str):
             return
         # No tasks → fall through (it's a real question)
 
+    # ── INSTANT FACT — deterministic time/date/weather, zero LLM, always correct ──
+    fact = _try_instant_fact(text)
+    if fact:
+        await safe_send(ws, {"type": "event", "data": {
+            "type": "assistant",
+            "message": {"content": [{"type": "text", "text": fact}]},
+        }})
+        await _send_tts(ws, room, fact)
+        await safe_send(ws, {"type": "done", "session_id": None})
+        return
+
     # ── UNDERSTAND FIRST ──
     # Real task (deterministic verb gate) → straight to Claude, the brain.
     # Otherwise chatz reads the actual intent: it answers small talk and questions
@@ -1187,28 +1298,49 @@ async def run_msg(text: str, ws: WebSocket, room: str):
             return
         # 'claude' or 'empty' → fall through to the brain
 
-    ack = _smart_ack(text)
+    # ── TASK MEMORY: have I done this (or something like it) before? ──
+    match, score = _traj_match(text)
+    known = bool(match) and score >= ADAPT_TH
+    if known:
+        # Memory HIT — replicate the proven recipe, just adapt the variables. Fast.
+        ack = "I've done this before. I'm replaying my previous steps and adapting them for you now — it'll be quick."
+        recipe = "\n".join(match.get("commands", []))
+        enhanced = (
+            f"{text}\n\n"
+            f"[TASK MEMORY — you have done a very similar task before and it worked. Here is the exact "
+            f"recipe of shell commands you ran. Reuse it: adapt only the variables/values to THIS request "
+            f"and run the commands directly. Do NOT re-explore the screen or search for tools unless a "
+            f"command fails.\n{recipe}\n]\n"
+            f"[SCREEN_CONTEXT: data/last_screen.jpg has the current screen state]"
+        )
+    else:
+        # Memory MISS — first time. Be honest that it'll take a moment to work out.
+        ack = "I haven't done this exact task before, so give me a moment to work out the steps. I'm on it now."
+        enhanced = (
+            f"{text}\n\n"
+            f"[SCREEN_CONTEXT: data/last_screen.jpg has the current screen state]"
+        )
     await safe_send(ws, {"type": "ack", "text": ack})
 
     _active[room] = _active.get(room, 0) + 1
     try:
         # ── CLAUDE IS ALWAYS THE BRAIN. chat-z only fills the silence while Claude works. ──
-        enhanced = (
-            f"{text}\n\n"
-            f"[SCREEN_CONTEXT: data/last_screen.jpg has the current screen state]"
-        )
         tid = _reg_add(room, text[:80])
         started = time.time()
+        captured: list = []   # shell commands Claude runs — saved as this task's trajectory
         # chat-z bridge: if Claude hasn't responded in a few seconds, chat-z talks to fill the gap.
         filler = asyncio.create_task(_task_filler(ws, room, task_desc=text, delay=5.0))
         try:
             sid = sessions.get(room)
-            new_sid = await run_claude(enhanced, sid, ws, room)
+            new_sid = await run_claude(enhanced, sid, ws, room, capture=captured)
             if new_sid:
                 sessions[room] = new_sid
             elapsed = int(time.time() - started)
             _reg_done(tid)
             _registry[tid]["result"] = f"took about {elapsed} seconds"
+            # Self-experience learning: remember how this task was done for next time.
+            # (record updates the matching entry's recipe + use-count, or adds a new one.)
+            _traj_record(text, captured)
             # Feed result to chat-z context so it stays in sync with Claude
             entry = f"Done: {text[:80]} (in {elapsed}s)"
             existing = _summaries.get(room, "")
@@ -1615,6 +1747,7 @@ async def run_claude(
     session_id: Optional[str],
     ws: WebSocket,
     room: Optional[str],
+    capture: Optional[list] = None,   # if given, append each shell command Claude runs
 ) -> Optional[str]:
     cmd = [
         CLAUDE_BIN, "-p", message,
@@ -1673,6 +1806,12 @@ async def run_claude(
 
         elif etype == "assistant":
             for block in evt.get("message", {}).get("content", []):
+                # Capture shell commands for the trajectory cache (self-experience learning)
+                if block.get("type") == "tool_use" and capture is not None:
+                    inp = block.get("input") or {}
+                    c = inp.get("command") if isinstance(inp, dict) else None
+                    if c and isinstance(c, str):
+                        capture.append(c)
                 if block.get("type") == "text":
                     text = block.get("text", "")
                     last_text = text
