@@ -5,6 +5,16 @@ data/qwen_cookie.txt
 data/tg_chat_id.txt
 data/accounts.json
 
+# ── SSH / private keys — NEVER commit ──
+iffn
+iffn.pub
+id_ed25519*
+id_rsa*
+id_ecdsa*
+*.pem
+*_private_key*
+*-----BEGIN*
+
 # ── Python ──
 __pycache__/
 *.pyc
