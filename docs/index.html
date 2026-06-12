@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAX — Maximize Your Life</title>
+<meta name="description" content="MAX is an autonomous AI assistant built for Lebanon. It talks, listens, and gets things done — on the road, on the trail, and in everyday life.">
+<meta property="og:title" content="MAX — Maximize Your Life">
+<meta property="og:description" content="Your voice-first AI assistant, tuned for Lebanon. On the road, in sport, in daily life.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070b14;
+    --bg2:#0c1322;
+    --ink:#eef3ff;
+    --muted:#9fb0cc;
+    --red:#ed1c24;       /* Lebanon flag red */
+    --green:#23b14d;     /* Lebanon flag green */
+    --gold:#ffd66e;
+    --glass:rgba(255,255,255,.05);
+    --line:rgba(255,255,255,.10);
+    --radius:22px;
+    --max:1140px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--bg);color:var(--ink);
+    overflow-x:hidden;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.brand{font-family:'Sora',sans-serif;letter-spacing:-.02em}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+  .grad{background:linear-gradient(100deg,var(--red),var(--gold) 45%,var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* ── animated aurora background ── */
+  .aurora{position:fixed;inset:0;z-index:-2;overflow:hidden}
+  .aurora span{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;animation:float 18s ease-in-out infinite}
+  .aurora span:nth-child(1){width:520px;height:520px;background:#ed1c2455;top:-120px;left:-100px}
+  .aurora span:nth-child(2){width:480px;height:480px;background:#23b14d44;bottom:-140px;right:-80px;animation-delay:-6s}
+  .aurora span:nth-child(3){width:400px;height:400px;background:#ffd66e33;top:40%;left:55%;animation-delay:-11s}
+  @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.1)}66%{transform:translate(-30px,40px) scale(.95)}}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;
+    background:radial-gradient(1200px 600px at 50% -10%,#16203a55,transparent 70%);
+    pointer-events:none}
+
+  /* ── nav ── */
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+    background:rgba(7,11,20,.55);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.25rem}
+  .brand .dot{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--red),var(--green));font-size:1rem;box-shadow:0 6px 20px #ed1c2440}
+  .nav-links{display:flex;gap:30px;align-items:center}
+  .nav-links a{color:var(--muted);font-size:.94rem;font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:9px;border:none;cursor:pointer;
+    font-family:'Sora';font-weight:700;font-size:1rem;padding:14px 28px;border-radius:14px;
+    background:linear-gradient(120deg,var(--red),var(--green));color:#fff;
+    box-shadow:0 10px 30px #ed1c2433,0 4px 12px #23b14d33;transition:transform .18s,box-shadow .18s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px #ed1c2455,0 6px 18px #23b14d44}
+  .btn.ghost{background:var(--glass);border:1px solid var(--line);box-shadow:none;color:var(--ink)}
+  .btn.sm{padding:10px 20px;font-size:.92rem}
+  .nav-cta{display:flex;gap:10px}
+
+  /* ── hero ── */
+  .hero{text-align:center;padding:96px 0 72px}
+  .pill{display:inline-flex;gap:8px;align-items:center;font-size:.82rem;color:var(--muted);
+    border:1px solid var(--line);background:var(--glass);padding:7px 16px;border-radius:100px;margin-bottom:28px}
+  .pill .live{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 #23b14d;animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 #23b14d88}70%{box-shadow:0 0 0 10px #23b14d00}100%{box-shadow:0 0 0 0 #23b14d00}}
+  .hero h1{font-size:clamp(3rem,9vw,6.2rem);font-weight:800;line-height:.98;margin-bottom:8px}
+  .hero .sub{font-family:'Sora';font-weight:300;font-size:clamp(1.3rem,4vw,2rem);color:var(--ink);margin-bottom:22px}
+  .hero p.lead{max-width:620px;margin:0 auto 38px;color:var(--muted);font-size:1.12rem}
+  .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .micro{margin-top:18px;font-size:.85rem;color:var(--muted)}
+
+  /* ── orb / voice viz ── */
+  .orb{width:140px;height:140px;margin:54px auto 0;border-radius:50%;position:relative;
+    background:radial-gradient(circle at 35% 30%,#fff3,transparent 60%),linear-gradient(135deg,var(--red),var(--green));
+    box-shadow:0 0 60px #ed1c2455,0 0 90px #23b14d33;animation:breathe 4s ease-in-out infinite}
+  .orb::after{content:"";position:absolute;inset:-14px;border-radius:50%;border:1px solid var(--line);animation:ring 4s ease-in-out infinite}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+  @keyframes ring{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.15);opacity:.2}}
+
+  /* ── sections ── */
+  section{padding:84px 0;position:relative}
+  .eyebrow{font-family:'Sora';font-weight:700;font-size:.82rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  .sec-head{max-width:680px;margin:0 auto 54px;text-align:center}
+  .sec-head h2{font-size:clamp(2rem,5vw,3rem);font-weight:800;margin-bottom:14px;line-height:1.08}
+  .sec-head p{color:var(--muted);font-size:1.08rem}
+
+  /* ── Lebanon use-cases ── */
+  .cases{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .case{background:var(--glass);border:1px solid var(--line);border-radius:var(--radius);padding:34px 28px;
+    transition:transform .25s,border-color .25s,background .25s;position:relative;overflow:hidden}
+  .case:hover{transform:translateY(-6px);border-color:#ffffff2a;background:rgba(255,255,255,.07)}
+  .case .ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:1.7rem;margin-bottom:20px;
+    background:linear-gradient(135deg,#ffffff14,#ffffff05);border:1px solid var(--line)}
+  .case h3{font-size:1.32rem;margin-bottom:10px}
+  .case p{color:var(--muted);font-size:.98rem}
+  .case ul{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:8px}
+  .case li{display:flex;gap:9px;align-items:flex-start;font-size:.92rem;color:var(--ink)}
+  .case li::before{content:"";width:7px;height:7px;border-radius:50%;margin-top:8px;flex:none;
+    background:linear-gradient(135deg,var(--red),var(--green))}
+  .case .glow{position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;
+    filter:blur(50px);opacity:.35}
+  .c1 .glow{background:var(--red)} .c2 .glow{background:var(--green)} .c3 .glow{background:var(--gold)}
+
+  /* ── feature grid ── */
+  .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .feat{background:linear-gradient(180deg,#ffffff09,#ffffff03);border:1px solid var(--line);border-radius:18px;padding:26px}
+  .feat .fi{font-size:1.6rem;margin-bottom:12px}
+  .feat h3{font-size:1.08rem;margin-bottom:6px}
+  .feat p{color:var(--muted);font-size:.92rem}
+
+  /* ── how it works ── */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;counter-reset:s}
+  .step{position:relative;padding:30px 24px;border:1px solid var(--line);border-radius:var(--radius);background:var(--glass)}
+  .step::before{counter-increment:s;content:counter(s);position:absolute;top:-18px;left:24px;
+    width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-family:'Sora';font-weight:800;
+    background:linear-gradient(135deg,var(--red),var(--green));box-shadow:0 8px 22px #ed1c2440}
+  .step h3{margin:14px 0 8px;font-size:1.18rem}
+  .step p{color:var(--muted);font-size:.96rem}
+
+  /* ── final CTA ── */
+  .final{text-align:center;border:1px solid var(--line);border-radius:34px;padding:70px 28px;margin:30px 0 0;
+    background:radial-gradient(700px 300px at 50% 0%,#1a2b4a55,transparent),linear-gradient(180deg,#ffffff0a,#ffffff03);position:relative;overflow:hidden}
+  .final h2{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:800;margin-bottom:14px}
+  .final p{color:var(--muted);font-size:1.12rem;max-width:520px;margin:0 auto 34px}
+
+  footer{border-top:1px solid var(--line);margin-top:90px;padding:40px 0;color:var(--muted);font-size:.9rem}
+  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+
+  /* ── reveal animation ── */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ── responsive ── */
+  @media(max-width:900px){
+    .cases,.feats,.steps{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .hero{padding:64px 0 48px}
+    section{padding:64px 0}
+  }
+  @media(max-width:560px){
+    .nav-cta .ghost{display:none}
+    .final{padding:54px 22px}
+  }
+</style>
+</head>
+<body>
+<div class="aurora"><span></span><span></span><span></span></div>
+
+<header>
+  <nav class="wrap">
+    <div class="brand"><span class="dot">✦</span> MAX</div>
+    <div class="nav-links">
+      <a href="#lebanon">For Lebanon</a>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn ghost sm" href="#lebanon">Learn more</a>
+      <a class="btn sm" href="https://max.vdo-x.art" target="_blank" rel="noopener">Try MAX →</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero wrap">
+    <span class="pill"><span class="live"></span> Live • Voice-first AI assistant</span>
+    <h1>MAX</h1>
+    <div class="sub">Maximize your <span class="grad">life</span>.</div>
+    <p class="lead">An autonomous AI assistant built for Lebanon. Talk to it, and it listens.
+      Ask, and it gets things done — on the road, on the trail, and in everyday life.</p>
+    <div class="hero-cta">
+      <a class="btn" href="https://max.vdo-x.art" target="_blank" rel="noopener">Try MAX free →</a>
+      <a class="btn ghost" href="#lebanon">See how it helps</a>
+    </div>
+    <p class="micro">No app to install · works on phone &amp; laptop · just speak</p>
+    <div class="orb"></div>
+  </section>
+
+  <!-- LEBANON USE CASES -->
+  <section id="lebanon">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Made for Lebanon</div>
+        <h2>One assistant for the way you actually live here</h2>
+        <p>MAX knows Lebanon — the roads, the regions, the season. It turns "I wish someone could just handle this" into done.</p>
+      </div>
+      <div class="cases">
+        <div class="case c1 reveal"><div class="glow"></div>
+          <div class="ic">🚗</div>
+          <h3>On the road</h3>
+          <p>Hands on the wheel, eyes on the road. Ask out loud and MAX answers.</p>
+          <ul>
+            <li>Which regions are safe right now and which to avoid</li>
+            <li>Live news, weather and conditions before you drive</li>
+            <li>Fully voice — no typing, no looking down</li>
+            <li>Open music or directions with one spoken command</li>
+          </ul>
+        </div>
+        <div class="case c2 reveal"><div class="glow"></div>
+          <div class="ic">🏔️</div>
+          <h3>For sport &amp; the outdoors</h3>
+          <p>Plan the perfect active day across Lebanon's mountains and coast.</p>
+          <ul>
+            <li>Best hikes — Qadisha Valley, the cedars, coastal trails</li>
+            <li>Weather windows so you train when it's right</li>
+            <li>Activities by season, from diving to skiing</li>
+            <li>Find courts, gyms and clubs with hours and numbers</li>
+          </ul>
+        </div>
+        <div class="case c3 reveal"><div class="glow"></div>
+          <div class="ic">✨</div>
+          <h3>Everyday life</h3>
+          <p>The small stuff that eats your day — handled in a flash.</p>
+          <ul>
+            <li>Restaurants with real opening hours and phone numbers</li>
+            <li>Your schedule for today and tomorrow, on command</li>
+            <li>Instant answers — time, weather, news, facts</li>
+            <li>Emails, presentations, images &amp; video, done for you</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">What it does</div>
+        <h2>A real assistant, not just a chatbot</h2>
+        <p>MAX speaks, listens and takes action on your behalf — quickly, and only when it needs to.</p>
+      </div>
+      <div class="feats">
+        <div class="feat reveal"><div class="fi">🎙️</div><h3>Talk &amp; it listens</h3><p>Say "MAX" and speak naturally. It replies in a warm voice, instantly.</p></div>
+        <div class="feat reveal"><div class="fi">⚡</div><h3>Flash answers</h3><p>Time, weather, news and Lebanon facts come back the moment you ask.</p></div>
+        <div class="feat reveal"><div class="fi">🖼️</div><h3>Creates for you</h3><p>Images, videos, presentations and emails — generated and delivered.</p></div>
+        <div class="feat reveal"><div class="fi">🧠</div><h3>Gets things done</h3><p>It can browse, search and operate your PC to finish real tasks.</p></div>
+        <div class="feat reveal"><div class="fi">🇱🇧</div><h3>Tuned for Lebanon</h3><p>Local restaurants, regions, news and schedules — refreshed every hour.</p></div>
+        <div class="feat reveal"><div class="fi">🔕</div><h3>Knows when to be quiet</h3><p>Say "shut up" and it stops talking instantly — the task keeps running.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">How it works</div>
+        <h2>Three words and you're running</h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><h3>Open MAX</h3><p>Tap "Try MAX" — it runs in your browser on any phone or laptop. Nothing to install.</p></div>
+        <div class="step reveal"><h3>Just say "MAX"</h3><p>Speak like you would to a friend. It acknowledges in seconds and starts working.</p></div>
+        <div class="step reveal"><h3>Get it done</h3><p>It answers, creates, or acts — and tells you the moment it's finished.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="wrap">
+    <div class="final reveal">
+      <div class="eyebrow">Ready when you are</div>
+      <h2>Maximize your <span class="grad">life</span>.</h2>
+      <p>Your AI assistant for Lebanon — on the road, in sport, and in everything between.</p>
+      <a class="btn" href="https://max.vdo-x.art" target="_blank" rel="noopener">Try MAX now →</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="brand"><span class="dot">✦</span> MAX</div>
+    <div>Maximize your life · Built in Lebanon 🇱🇧</div>
+    <a class="btn ghost sm" href="https://max.vdo-x.art" target="_blank" rel="noopener">Try MAX →</a>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.14});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{ el.style.transitionDelay=(i%3*0.08)+'s'; io.observe(el); });
+</script>
+</body>
+</html>
