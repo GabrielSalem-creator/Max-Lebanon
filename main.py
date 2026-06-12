@@ -696,8 +696,11 @@ def _try_instant_action(text: str):
     # ── YouTube: open + play/search ──
     if "youtube" in t or re.search(r"\bplay\b", t):
         q = text
+        # drop domains/URLs first so ".com" doesn't leak into the query
+        q = re.sub(r"(?i)\b(?:www\.)?youtu(?:be)?\.(?:com|be)\b", " ", q)
+        q = re.sub(r"(?i)\.com\b|\bdot com\b", " ", q)
         # strip command/filler words to isolate the actual query
-        q = re.sub(r"(?i)\b(hey\s+max|max|can you|could you|would you|please|open|go to|launch|and|on|in|the|a|to|play|put on|youtube|video|music|song|track|for me|some)\b", " ", q)
+        q = re.sub(r"(?i)\b(hey\s+max|max|can you|could you|would you|please|open|go to|launch|and|on|in|the|a|to|play|put on|youtube|video|music|song|track|for me|some|search for|search)\b", " ", q)
         q = re.sub(r"\s+", " ", q).strip(" ,.-")
         if q:
             # Signal: resolve the FIRST matching video and open its watch page (auto-plays).
@@ -718,8 +721,11 @@ def _try_instant_action(text: str):
     m = re.search(r"(?i)\b(?:open|go to|launch|bring up)\s+(.+)", text)
     if m:
         target = m.group(1).lower().strip(" ,.-")
+        # match site names as WHOLE WORDS only — never as substrings, so "x" can't
+        # match the letter x inside "explorer"/"max"/"next".
+        target_words = set(re.findall(r"[a-z0-9]+", target))
         for name, url in SITES.items():
-            if name in target:
+            if name in target_words:
                 return (f'start chrome "{url}"', f"Opening {name}.")
         # bare domain like "open example.com"
         dm = re.search(r"([a-z0-9-]+\.[a-z]{2,})", target)
