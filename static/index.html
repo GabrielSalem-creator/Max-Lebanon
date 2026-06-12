@@ -842,7 +842,14 @@ function _pickVoice(){
 _synth.onvoiceschanged = _pickVoice;
 _pickVoice();
 
-let _ttsMuted = false;   // set by "shut up" — drops incoming voice until next user message
+let _ttsMuted = false;    // set by "shut up" — drops incoming voice until next user message
+let _lastSpokeAt = 0;     // timestamp MAX last spoke — used to ignore mic echo of its own voice
+
+// True while MAX is talking (or just finished) — the mic should ignore audio then,
+// otherwise it transcribes MAX's own TTS (and background music) back as commands.
+function maxIsSpeaking(){
+  return _synth.speaking || (Date.now() - _lastSpokeAt) < 800;
+}
 
 function enqueueTTS(text){
   if(!ttsOn || _ttsMuted) return;
@@ -860,6 +867,8 @@ function enqueueTTS(text){
   utt.pitch = 1.0;
   utt.volume = 1.0;
   if(_ttsVoice) utt.voice = _ttsVoice;
+  utt.onstart = ()=>{ _lastSpokeAt = Date.now(); };
+  utt.onend   = ()=>{ _lastSpokeAt = Date.now(); };
   _synth.speak(utt);
 }
 
@@ -888,6 +897,10 @@ function initSpeech(){
   let finalT='', silTimer=null;
 
   recog.onresult=e=>{
+    // Ignore anything heard while MAX is talking — stops the mic from transcribing
+    // MAX's own TTS (or background music) and firing it back as a command.
+    if(maxIsSpeaking()){ finalT=''; return; }
+
     let interim='';
     for(let i=e.resultIndex;i<e.results.length;i++){
       if(e.results[i].isFinal) finalT+=e.results[i][0].transcript;

@@ -1214,9 +1214,18 @@ async def run_msg(text: str, ws: WebSocket, room: str):
             existing = _summaries.get(room, "")
             parts = [e for e in existing.split(" | ") if e][-1:] + [entry]
             _summaries[room] = " | ".join(parts)
-        except Exception:
+        except Exception as e:
             _reg_done(tid, "failed")
-            raise
+            # Fail gracefully — tell the user instead of crashing the detached task.
+            import traceback as _tb
+            _tb.print_exc()
+            msg = "Sorry, that one hit a snag on my end. Want me to try again?"
+            await safe_send(ws, {"type": "event", "data": {
+                "type": "assistant",
+                "message": {"content": [{"type": "text", "text": msg}]},
+            }})
+            await _send_tts(ws, room, msg)
+            await safe_send(ws, {"type": "done", "session_id": None})
         finally:
             filler.cancel()
     finally:
@@ -1621,6 +1630,9 @@ async def run_claude(
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
         cwd=str(MAX_DIR),
+        limit=64 * 1024 * 1024,   # 64 MB line buffer — Claude stream-json emits huge
+                                  # single lines (e.g. base64 tool results) that blow past
+                                  # asyncio's default 64 KB readline limit and crash the task.
     )
 
     # Track proc so the stop command can terminate it
