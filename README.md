@@ -1,86 +1,287 @@
-# 🇱🇧 AI Agents Hackathon 2026 — Life in Lebanon
+# MAX Lebanon 🇱🇧
+### *Maximize Your Life — The Voice AI Built for Lebanon*
 
-## 🧩 Overview
-
-Welcome to the **AI Agents Hackathon 2026**! The theme for this sprint is **Life in Lebanon**. 
-
-Your challenge is to build an AI-powered agent or solution that directly tackles a critical, tangible problem that people or businesses face in their day-to-day lives in Lebanon. The solution must use autonomous AI agents, LLMs, or smart workflows to navigate, alleviate, or solve local inefficiencies and systemic friction.
-
-The solution can utilize any delivery interface that makes sense for the target user (e.g., a WhatsApp chatbot, a lightweight web application, a voice assistant, or a mobile utility).
+> **Core mission:** Let Lebanese drivers keep their eyes on the road by giving them a voice-first AI that handles information, navigation, messaging, and tasks — without touching a phone.
 
 ---
 
-## 🎯 The Challenge: Bridging Gaps in Lebanon
+## The Problem
 
-Lebanese residents navigate a complex web of daily challenges due to infrastructural, economic, and institutional gaps. Your goal is to identify a specific pain point and build a functional AI agent to address it. 
+Lebanon has one of the highest rates of road accidents per capita in the region. A leading cause: **distracted driving**. Drivers look at phones to check WhatsApp, search for routes, read news, find fuel prices. Every glance away from the road is a risk.
 
-### 💡 Core Pain Points & Inspiration Fields:
-- **⚡ Electricity & Generator Management:** Tracking state vs. private generator schedules, predicting cuts, optimizing household consumption, or managing community subscription billing.
-- **🏥 Healthcare & Medication Access:** Cross-referencing local pharmacy inventories for scarce medications, tracking substitute drugs, managing crowdfunding for medical emergencies, or navigating complex insurance/Ministry of Health workflows.
-- **🏛️ Government Services & Bureaucracy:** Interactive guides to navigate official paperwork (passports, driver's licenses, company registrations), translating opaque administrative procedures into step-by-step checklists, or tracking civil registry statuses.
-- **💼 Unemployment & Local Economy:** Smart job-matching platforms for the informal sector, hyper-local freelancing networks, or AI career advisors tailored to Lebanese macroeconomic realities and remote global work opportunities.
-- **🛣️ Infrastructure, Water & Transport:** Crowd-sourced tracking of water delivery services, dynamically mapping road safety/traffic anomalies, or automating community-led waste management and recycling networks.
-- **📉 Financial Literacy & Multi-Rate Currency Workflows:** Tools optimizing day-to-day cash management, dynamic pricing adaptations for small businesses, or parsing local parallel market trends.
+MAX removes that risk entirely. **You speak. MAX acts. Your eyes never leave the road.**
 
 ---
 
-## 🛠️ Hackathon Rules & Requirements
+## Live URLs
 
-To maintain fairness and ensure a competitive engineering spirit, all teams must strictly adhere to the following rules:
-
-- **👥 Team Structure:** You must work in a **team of exactly 2 members**. No solo participants, and no larger groups.
-- **🌿 Git Workflow:** Fork this repository at the start of the hackathon.
-- **🔓 Repository Visibility:** Your forked repository **must be public**. All commits, architectural blueprints, and source code must be pushed directly to this repository.
-- **⏰ Submission Deadline:** The hard deadline for submission is **Saturday at 8:00 AM sharp**. Late commits or late submission form entries will not be evaluated.
-- **🧰 Tech Stack Autonomy:** You are completely free to use **any tool, any programming language, and any framework** (e.g., LangChain, CrewAI, AutoGen, LlamaIndex, Python, Node.js, etc.).
-- **🌐 Mandatory Deployment:** You are required to deploy your solution on a cloud platform or public gateway of your choice (e.g., Vercel, Render, Railway, Hugging Face, Twilio Sandbox, Ngrok for live voice endpoints). We **must** be provided with a live, accessible link to test the solution.
-- **⚙️ Operational Functionality:** The solution must be fully functional. Mocked frontends with static backends or non-functional API stubs will receive zero points.
-- **🧠 AI Core:** The core logic of the solution **has to use AI** (Autonomous Agents, LLMs, Vector Databases, Semantic Search, or Multi-agent orchestration workflows).
+| | URL | Purpose |
+|---|---|---|
+| 🔒 | [max.vdo-x.art](https://max.vdo-x.art) | The MAX app — password-protected |
+| 🌍 | [max-lebanon.vdo-x.art](https://max-lebanon.vdo-x.art) | Public landing page — always online |
 
 ---
 
-## 🏆 Judging Criteria
+## How MAX Keeps Drivers Safe
 
-Submissions will be graded based on five equal pillars:
+### Fully hands-free — no screen, no touch
+Say `MAX` to wake it. Speak your request. Hear the answer. That's the entire interaction — no buttons, no scrolling, no glancing down.
 
-### 🚀 1. Technical Mastery
-- Does the agent or solution successfully interact with its environment via tools, custom web scrapers, or third-party APIs?
-- How sophisticated is the prompt engineering, state management, or multi-agent orchestration? 
-- Is the agent resilient against hallucinations and broken loops?
+### Real-time road intelligence
+- **Traffic** — *"Is there traffic on the highway to Beirut?"* → MAX pulls live congestion data and tells you the clearest route
+- **Security alerts** — tracks incidents across Lebanon via LiveUAMap; warns you of danger zones before you drive into them
+- **Safe route advice** — cross-references current conditions and recommends the safest road
 
-### 🎯 2. Usefulness
-- Does this solve a genuine problem for a resident or business owner in Lebanon?
-- Is the scope realistic, or does it try to solve systemic issues superficially? We value deep, practical utility for specific problems over generic, broad concepts.
-
-### 📱 3. User Experience (UX)
-- Can an ordinary citizen easily interact with your tool? 
-- Given the local infrastructure, interfaces that leverage highly accessible channels—such as **WhatsApp bots, voice channels, or ultra-lightweight, low-bandwidth web pages**—are highly encouraged and favored over heavy, data-intensive web apps.
-
-### 💡 4. Creativity & Resourcefulness
-- Did you find a clever, non-obvious way to bridge a gap in local data or missing infrastructure (e.g., using AI to parse unstructured WhatsApp group messages, scanning PDF notices, or scraping local community sites)?
-- How innovative is your approach to bypassing institutional data deficits?
-
-### 💎 5. Solution Quality
-- Is the output generated by the AI agent reliable, accurate, and contextually aware of the Lebanese landscape?
-- Does the system handle localized vocabulary, dialects (Lebanese Arabic/Franco-Arabic), or specific local nuances gracefully without breaking?
+### Replaces every dangerous phone habit
+| Instead of... | Just say... |
+|---|---|
+| Opening WhatsApp while driving | *"MAX, send a WhatsApp to Dad saying I'm on my way"* |
+| Searching for a song | *"MAX, play [song] on YouTube"* |
+| Checking fuel prices at the pump | *"MAX, what's the fuel price today?"* |
+| Reading news headlines | *"MAX, what's happening in Lebanon today?"* |
+| Checking your calendar | *"MAX, what do I have tomorrow?"* |
 
 ---
 
-## 📦 Deliverables For Submission
+## Full Feature Set
 
-When submitting, your team must provide:
-1. **Public Forked Repo URL:** Containing well-structured, documented, and clean code.
-2. **Deployed Production URL:** A live link to the Web UI, WhatsApp bot gateway, or active phone line.
-3. **Updated README:** Brief instructions in your repository explaining how to configure environment variables and run your project locally.
+### ⚡ Instant skills (predefined — zero AI reasoning time)
+These are hardcoded fast-paths. MAX already knows exactly how to do them:
+
+| Command | Action |
+|---|---|
+| Play [song] on YouTube | Fetches the first video and opens it directly — auto-plays |
+| Send WhatsApp to [contact] | Opens WhatsApp Web, finds the chat, sends |
+| Fuel price today | Scrapes dgo.gov.lb, reads back LBP rates for 95/98/diesel |
+| Traffic to [place] | Live congestion data, safest route |
+| Security near me | LiveUAMap Lebanon — explosion/incident alerts |
+| Summer 2026 events | Byblos, Beiteddine, Baalbeck, Wael Kfoury, Elissa concerts |
+| My schedule | Reads your calendar aloud |
+| Add [event] to calendar | Adds it, confirms by voice |
+| Make a PowerPoint about [topic] | Generates slides, sends to Telegram or email |
+| Generate an image of [thing] | AI image, delivered to Telegram |
+| News in Lebanon | Live scraped headlines, read aloud |
+| Restaurants near me | Options with opening hours and phone numbers |
+| Lebanon safe regions | Which areas to avoid right now |
+
+### 🧠 Trajectory memory — gets faster with every use
+- **First time** doing a task: MAX works it out from scratch. It says *"I haven't done this before, give me a moment."*
+- **Every time after**: MAX recognises the task, replays its proven recipe, adapts only the changed variables. **Milliseconds instead of minutes.**
+- Tasks are saved as reusable recipes in a local cache. The more you use MAX, the faster it gets.
+
+### 🌍 Three languages — auto-detected
+MAX listens and speaks in whichever language you use:
+- **English** — `en-US-JennyNeural`
+- **French** — `fr-FR-DeniseNeural` *(auto-detected from French words)*
+- **Lebanese Arabic** — `ar-LB-LaylaNeural` *(auto-detected from Arabic script)*
+
+Switch mid-session — MAX keeps up.
+
+### 🔒 Security
+- `max.vdo-x.art` is password-protected — nobody can join and spam the AI
+- Session token stored in browser localStorage — enter password once, stay logged in
+- Passwords for third-party websites are **never** passed to the AI — injected directly into the browser DOM
+- All credentials stay on your machine, never in the AI's context
+
+### 🖥️ PC performance isolation
+When MAX starts, it terminates all non-essential background processes to free RAM and CPU — keeping only Chrome and system essentials.
 
 ---
 
-## 📝 Pro Tips for Success
+## Architecture
 
-- **Design for Low Bandwidth:** Internet and electricity in Lebanon fluctuate. Ensure your frontend loads quickly, or rely on asynchronous channels like WhatsApp where messages retry automatically.
-- **Address Data Scarcity:** Official public APIs do not exist for most Lebanese services. Use your AI agent to structure unstructured data (e.g., turning a daily text message update about fuel or currency rates into structured JSON data).
-- **Focus over Scope:** A perfectly working WhatsApp agent that solves *only* medication tracking will score significantly higher than an ambitious "All-in-One Government Portal" that crashes during live evaluation.
+```
+User voice/text
+      │
+      ▼
+  Browser (index.html)
+  ├── Wake word "MAX" → STT (EN/FR/AR, Web Speech API)
+  ├── Browser-native TTS — zero latency
+  ├── "Shut up" → mutes voice only, task keeps running
+  └── WebSocket → server
+              │
+              ▼
+  FastAPI server — main.py (port 8000)
+  │
+  ├─ Layer 1: Instant actions (0ms)
+  │   YouTube play, open sites, Windows apps
+  │
+  ├─ Layer 2: Instant facts (0ms)
+  │   Time, date, weather, Lebanese cached data (refreshed hourly)
+  │
+  ├─ Layer 3: Trajectory cache
+  │   Known task → replay proven recipe with adapted variables
+  │
+  ├─ Layer 4: chat-z LLM (fast fill, ~1s)
+  │   Conversation while Claude works in background
+  │
+  └─ Layer 5: Claude CLI (the brain)
+      Real tasks: search, create, send, control PC
+              │
+              ├── tools.py
+              │   search · images · video · email · telegram · PowerPoint
+              │
+              └── Windows PC control
+                  Tier 1: Shell commands (fastest)
+                  Tier 2: UIAutomation (structural)
+                  Tier 3: OCR + pyautogui (visual fallback)
+
+Cloudflare Tunnel
+├── max.vdo-x.art          → localhost:8000  (protected app)
+└── max-lebanon.vdo-x.art  → localhost:8001  (public landing page)
+
+GitHub Pages (always online, PC-independent)
+└── gabrielsalem-creator.github.io/Max-Lebanon/
+```
 
 ---
 
-> 🏁 **Good luck, teams!** Build something resilient, innovative, and impactful. Let's leverage AI to solve real-world friction in Lebanon 🚀.
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Python 3.10+, FastAPI, asyncio |
+| AI brain | Claude CLI (Anthropic) |
+| Fast responder | chat-z (fills silence while Claude works) |
+| TTS | Browser `speechSynthesis` + edge-tts |
+| STT | Web Speech API (Chrome/Edge, multilingual) |
+| PC control | Shell → UIAutomation → pyautogui |
+| Images | Custom generation API |
+| Video | RunwayML Gen-4 Turbo |
+| Email | Resend API |
+| Messaging | Telegram Bot API |
+| Presentations | python-pptx |
+| Tunnel | Cloudflare Tunnel |
+| Landing page | GitHub Pages |
+| Waitlist | Discord Webhook |
+
+---
+
+## Setup
+
+### Requirements
+```bash
+pip install fastapi uvicorn httpx websockets pyautogui edge-tts python-dotenv python-pptx
+```
+Claude Code CLI must be installed and authenticated.
+
+### Environment (`.env` — never committed)
+```env
+RESEND_KEY=your_resend_api_key
+TG_TOKEN=your_telegram_bot_token
+VID_KEY=your_video_api_key
+IMG_URL=https://image-z.created.app/api/generate-image
+LLM_URL=https://chat.good.hidns.vip/api/openai/v1
+USER_EMAIL=your@email.com
+RUNWAY_JWT=your_runwayml_jwt
+```
+
+### Run
+```bash
+# Terminal 1 — main app
+python main.py
+
+# Terminal 2 — landing page server
+python landing_server.py
+
+# Terminal 3 — Cloudflare tunnel
+cloudflared tunnel run max
+```
+
+### Cloudflare config (`~/.cloudflared/config.yml`)
+```yaml
+tunnel: <your-tunnel-id>
+credentials-file: ~/.cloudflared/<your-tunnel-id>.json
+
+ingress:
+  - hostname: max.vdo-x.art
+    service: http://localhost:8000
+  - hostname: max-lebanon.vdo-x.art
+    service: http://localhost:8001
+  - service: http_status:404
+```
+
+---
+
+## Voice Quick Reference
+
+```
+Wake word: "MAX"
+
+ROAD SAFETY
+  "Is there traffic to Jounieh?"
+  "Any danger zones near Beirut?"
+  "Which road is safest right now?"
+  "Any explosions in the south?"
+
+INFORMATION
+  "What's the fuel price today?"
+  "What's the news in Lebanon?"
+  "What are the summer 2026 events?"
+  "What time is it?" / "What's the weather?"
+
+CALENDAR
+  "What's on my schedule today?"
+  "Add Byblos festival July 5th to my calendar"
+
+MEDIA
+  "Play Fairuz on YouTube"
+  "Shut up" — stops voice, task keeps running
+  "Stop everything" — cancels all tasks
+
+MESSAGES
+  "Send a WhatsApp to [name] saying [message]"
+  "Send an email to [address] about [topic]"
+
+CREATE
+  "Generate an image of [thing] and send to Telegram"
+  "Make a PowerPoint about [topic] and email it"
+
+LEBANON
+  "Are the southern regions safe?"
+  "Good restaurants in Hamra with hours?"
+  "Cool things to do in Beirut this summer?"
+```
+
+---
+
+## Project Status
+
+| Feature | Status |
+|---|---|
+| Voice assistant (EN / FR / AR) | ✅ Live |
+| Password-protected app | ✅ Live |
+| Session persistence | ✅ Live |
+| Trajectory memory | ✅ Live |
+| Instant fast-path skills | ✅ Live |
+| Image & video generation | ✅ Live |
+| PowerPoint generation | ✅ Live |
+| Email & Telegram delivery | ✅ Live |
+| Landing page (GitHub Pages) | ✅ Live |
+| Discord waitlist webhook | ✅ Live |
+| Cloudflare tunnel (both domains) | ✅ Live |
+| Mic self-hearing guard | ✅ Live |
+| "Shut up" mute (task keeps running) | ✅ Live |
+| WhatsApp automation | 🔄 In progress |
+| Google Calendar API | 🔄 In progress |
+| LiveUAMap real-time tracking | 🔄 In progress |
+| Live fuel price scraping (dgo.gov.lb) | 🔄 In progress |
+| Live traffic data | 🔄 In progress |
+
+---
+
+## Why Lebanon
+
+Lebanon has specific challenges that generic AI assistants ignore:
+- Roads that require real-time security awareness
+- Fuel prices that change daily in LBP
+- A population that switches between Arabic, French, and English mid-sentence
+- Local events, restaurants, and regions that no global dataset covers
+
+MAX is built around those realities. It is not a global product with a Lebanese flag — it is a tool designed from the ground up for how life works here.
+
+**Goal: measurably reduce distracted-driving accidents in Lebanon by making voice-first AI the default way people interact with information while on the road.**
+
+---
+
+*Built in Lebanon 🇱🇧 · [max-lebanon.vdo-x.art](https://max-lebanon.vdo-x.art) · Maximize your life.*
