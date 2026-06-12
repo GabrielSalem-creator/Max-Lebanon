@@ -1,0 +1,15 @@
+[Unit]
+Description=MAX AI Assistant
+After=network.target
+
+[Service]
+User=boxd
+WorkingDirectory=/home/boxd/max
+ExecStart=/usr/bin/python3 main.py
+Restart=always
+RestartSec=3
+StandardOutput=append:/home/boxd/max/max.log
+StandardError=append:/home/boxd/max/max.log
+
+[Install]
+WantedBy=multi-user.target

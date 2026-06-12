@@ -1,0 +1,51 @@
+# ── Secrets / credentials ──
+.env
+*.env.local
+data/qwen_cookie.txt
+data/tg_chat_id.txt
+data/accounts.json
+
+# ── Python ──
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# ── Logs ──
+*.log
+max.log
+data/*.log
+
+# ── Databases / sessions / runtime state ──
+*.db
+data/*.db
+data/sessions/
+data/skills/
+data/_lebanon/
+
+# ── Caches ──
+.firecrawl/
+.claude/
+
+# ── Generated media / user content (private) ──
+static/img/
+static/files/
+public/
+data/last_screen.jpg
+data/*.pptx
+data/*.mp4
+data/*.png
+data/*.jpg
+
+# ── Private screenshots / captures (user's screen & email) ──
+outlook_*.png
+outlook_*.txt
+*_capture.png
+*_screen.png
+last_screen.jpg
+
+# ── Temp ──
+*.tmp
+*.bak

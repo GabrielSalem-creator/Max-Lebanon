@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f0f1a">
+<title>MAX</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0f0f1a;
+  --surface:#16162a;
+  --surface2:#1e1e3a;
+  --surface3:#252550;
+  --accent:#7c3aed;
+  --accent2:#a855f7;
+  --accent3:#c084fc;
+  --text:#e2e8f0;
+  --muted:#64748b;
+  --border:#2d2d55;
+  --user-bg:#1e1b4b;
+  --ai-bg:#16162a;
+  --success:#10b981;
+  --warn:#f59e0b;
+  --error:#ef4444;
+}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  display:flex;
+  flex-direction:column;
+  height:100dvh;
+}
+
+/* ── Header ── */
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 16px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  gap:12px;
+}
+.logo{
+  font-size:1.5rem;
+  font-weight:900;
+  letter-spacing:.08em;
+  background:linear-gradient(135deg,var(--accent2),var(--accent3));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hdr-center{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.status-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--success);
+}
+.status-dot.off{background:var(--error)}
+.status-label{font-size:.8rem;color:var(--muted)}
+.hdr-btns{display:flex;gap:4px}
+.hdr-btn{
+  background:none;border:none;
+  color:var(--muted);
+  font-size:1.15rem;
+  cursor:pointer;
+  padding:8px;
+  border-radius:10px;
+  transition:background .15s,color .15s;
+  line-height:1;
+}
+.hdr-btn:hover,.hdr-btn:active{background:var(--surface2);color:var(--text)}
+
+/* ── Messages ── */
+#msgs{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:12px 12px 8px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  scroll-behavior:smooth;
+}
+#msgs::-webkit-scrollbar{width:3px}
+#msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.msg{
+  display:flex;
+  flex-direction:column;
+  max-width:88%;
+  animation:fadeUp .2s ease;
+}
+.msg.user{align-self:flex-end;align-items:flex-end}
+.msg.ai{align-self:flex-start;align-items:flex-start}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.bubble{
+  padding:10px 14px;
+  border-radius:18px;
+  line-height:1.55;
+  font-size:.95rem;
+  word-break:break-word;
+  white-space:pre-wrap;
+}
+.msg.user .bubble{
+  background:var(--user-bg);
+  border:1px solid rgba(124,58,237,.3);
+  border-bottom-right-radius:4px;
+}
+.msg.ai .bubble{
+  background:var(--ai-bg);
+  border:1px solid var(--border);
+  border-bottom-left-radius:4px;
+}
+.bubble code{
+  background:var(--surface3);
+  padding:1px 5px;
+  border-radius:4px;
+  font-family:'Menlo','Monaco',monospace;
+  font-size:.85em;
+}
+.bubble pre{
+  background:var(--surface3);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:10px;
+  overflow-x:auto;
+  font-family:'Menlo','Monaco',monospace;
+  font-size:.82em;
+  margin:6px 0;
+  white-space:pre;
+}
+.msg-time{font-size:.72rem;color:var(--muted);margin-top:3px;padding:0 4px}
+
+/* typing dots */
+.typing-dots{
+  display:inline-flex;gap:4px;align-items:center;padding:4px 0;
+}
+.typing-dots span{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--muted);
+  animation:dot 1.2s infinite;
+}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot{
+  0%,60%,100%{opacity:.3;transform:translateY(0)}
+  30%{opacity:1;transform:translateY(-3px)}
+}
+
+/* tool card */
+.tool-card{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 12px;
+  font-size:.82rem;
+  color:var(--muted);
+  max-width:85%;
+  align-self:flex-start;
+}
+.tool-card .tc-name{color:var(--accent3);font-weight:600}
+.tool-card .tc-status{margin-left:auto;font-size:.8rem}
+.tool-card.done .tc-status{color:var(--success)}
+
+/* plan card */
+.plan-card{
+  align-self:flex-start;
+  background:var(--surface2);
+  border:1px solid var(--accent);
+  border-radius:16px;
+  padding:16px;
+  max-width:95%;
+  width:100%;
+  animation:fadeUp .3s ease;
+}
+.plan-card h3{
+  color:var(--accent3);
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  margin-bottom:6px;
+}
+.plan-goal{font-size:.95rem;margin-bottom:10px;font-weight:500}
+.plan-steps{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.plan-step{display:flex;align-items:flex-start;gap:10px;font-size:.88rem}
+.sn{
+  min-width:22px;height:22px;
+  border-radius:50%;
+  background:var(--accent);
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;font-weight:700;
+  flex-shrink:0;
+}
+.plan-risks{
+  background:rgba(245,158,11,.1);
+  border:1px solid rgba(245,158,11,.3);
+  border-radius:8px;
+  padding:8px 12px;
+  font-size:.85rem;
+  color:var(--warn);
+  margin-bottom:10px;
+}
+.plan-btns{display:flex;gap:8px}
+.btn{
+  padding:9px 18px;
+  border-radius:10px;
+  border:none;
+  font-size:.88rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:opacity .15s,transform .1s;
+  flex:1;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-secondary{background:var(--surface3);color:var(--text);border:1px solid var(--border)}
+
+/* ── Input bar ── */
+#bar{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  padding:10px 12px;
+  padding-bottom:calc(10px + env(safe-area-inset-bottom, 0px));
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+#tinput{
+  flex:1;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:10px 16px;
+  color:var(--text);
+  font-size:.95rem;
+  resize:none;
+  outline:none;
+  min-height:42px;
+  max-height:130px;
+  line-height:1.4;
+  font-family:inherit;
+  transition:border-color .2s;
+}
+#tinput:focus{border-color:var(--accent)}
+#tinput::placeholder{color:var(--muted)}
+.circ-btn{
+  width:42px;height:42px;
+  border-radius:50%;
+  border:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.15rem;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:all .2s;
+}
+#mic-btn{background:var(--surface2);color:var(--muted)}
+#mic-btn.wake{background:var(--accent);color:#fff}
+#mic-btn.listening{background:var(--error);color:#fff;animation:micpulse 1s infinite}
+@keyframes micpulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}
+  50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}
+}
+#send-btn{background:var(--accent);color:#fff}
+#send-btn:hover{background:var(--accent2)}
+#send-btn.busy{animation:sendpulse 1.5s infinite}
+@keyframes sendpulse{
+  0%,100%{opacity:1}50%{opacity:.5}
+}
+
+/* ── Voice overlay ── */
+#voice-overlay{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.96);
+  flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:28px;
+  z-index:200;
+}
+#voice-overlay.on{display:flex}
+.vorb{
+  width:110px;height:110px;
+  border-radius:50%;
+  background:radial-gradient(circle,var(--accent3),var(--accent));
+  animation:orbpulse 1.8s infinite;
+  box-shadow:0 0 50px var(--accent);
+}
+@keyframes orbpulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 40px var(--accent)}
+  50%{transform:scale(1.12);box-shadow:0 0 70px var(--accent2)}
+}
+#vtext{color:var(--text);font-size:1.05rem;text-align:center;max-width:280px;min-height:1.5em}
+.vcancel{
+  position:absolute;bottom:40px;
+  background:none;border:1px solid var(--border);
+  color:var(--muted);padding:10px 28px;
+  border-radius:20px;cursor:pointer;font-size:.9rem;
+}
+
+/* ── App layout ── */
+#app-wrap{
+  flex:1;
+  display:flex;
+  flex-direction:row;
+  overflow:hidden;
+  min-height:0;
+}
+#chat-col{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+}
+/* ── Desktop panel ── */
+#desktop-panel{
+  display:none;
+  width:44%;
+  min-width:260px;
+  max-width:680px;
+  flex-shrink:0;
+  border-left:1px solid var(--border);
+  flex-direction:column;
+  background:#080810;
+  position:relative;
+}
+#desktop-panel.on{display:flex}
+.dp-hdr{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:5px 12px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  font-size:.75rem;
+  color:var(--muted);
+  flex-shrink:0;
+  gap:8px;
+}
+.dp-live{
+  display:inline-block;
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--success);
+  animation:livepulse 2s infinite;
+  flex-shrink:0;
+}
+@keyframes livepulse{
+  0%,100%{opacity:1}50%{opacity:.3}
+}
+.dp-title{flex:1;font-weight:600;color:var(--accent3)}
+.dp-age{
+  font-family:'Menlo','Monaco',monospace;
+  font-size:.7rem;
+  color:var(--muted);
+}
+#desktop-img{
+  width:100%;
+  flex:1;
+  object-fit:contain;
+  display:block;
+  min-height:0;
+  cursor:crosshair;
+}
+#dp-placeholder{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--muted);
+  font-size:.85rem;
+  flex-direction:column;
+  gap:10px;
+}
+#desktop-btn.active{color:var(--accent3) !important}
+
+/* ── Task manager panel ── */
+#task-modal{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.75);
+  align-items:center;justify-content:center;
+  z-index:500;
+}
+#task-modal.on{display:flex}
+.tm-panel{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+  width:92%;max-width:520px;
+  max-height:78vh;
+  display:flex;flex-direction:column;
+  gap:14px;
+  animation:fadeUp .2s ease;
+}
+.tm-header{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.tm-header h2{font-size:.98rem;font-weight:700}
+.tm-actions{display:flex;gap:8px}
+.tm-table{
+  overflow-y:auto;flex:1;
+  display:flex;flex-direction:column;gap:6px;
+}
+.tm-row{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:8px 12px;
+}
+.tm-status{
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;
+}
+.tm-status.running{background:var(--success);animation:livepulse 1.5s infinite}
+.tm-status.done{background:var(--muted)}
+.tm-status.stopped{background:var(--error)}
+.tm-status.failed{background:var(--warn)}
+.tm-desc{flex:1;font-size:.82rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-time{font-size:.72rem;color:var(--muted);min-width:36px;text-align:right;font-family:monospace}
+.tm-kill{
+  background:rgba(239,68,68,.15);color:var(--error);
+  border:1px solid rgba(239,68,68,.3);border-radius:6px;
+  padding:3px 9px;font-size:.72rem;cursor:pointer;flex-shrink:0;
+}
+.tm-kill:hover{background:var(--error);color:#fff}
+.tm-empty{color:var(--muted);text-align:center;padding:24px;font-size:.88rem}
+.tm-legend{display:flex;gap:12px;font-size:.72rem;color:var(--muted)}
+.tm-legend span{display:flex;align-items:center;gap:4px}
+
+/* ── Voice hint banner ── */
+#voice-hint{
+  display:none;
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+  background:var(--surface2);border:1px solid var(--accent);
+  border-radius:20px;padding:10px 20px;
+  font-size:.85rem;color:var(--accent3);
+  z-index:100;pointer-events:none;
+  animation:fadeUp .3s ease;
+}
+
+/* ── Input modal ── */
+.modal-wrap{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.85);
+  align-items:flex-end;justify-content:center;
+  z-index:300;
+  padding:0 0 0;
+}
+.modal-wrap.on{display:flex}
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:22px 22px 0 0;
+  padding:24px 20px;
+  width:100%;
+  max-width:500px;
+  padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  animation:slideup .25s ease;
+}
+@keyframes slideup{
+  from{transform:translateY(100%)}
+  to{transform:translateY(0)}
+}
+.modal h2{font-size:1.05rem;margin-bottom:6px}
+.modal-p{color:var(--muted);font-size:.88rem;margin-bottom:14px;line-height:1.4}
+.modal-input{
+  width:100%;
+  background:var(--surface2);
+  border:2px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  color:var(--text);
+  font-size:1.3rem;
+  outline:none;
+  text-align:center;
+  letter-spacing:.12em;
+  margin-bottom:14px;
+  font-family:inherit;
+  transition:border-color .2s;
+}
+.modal-input:focus{border-color:var(--accent)}
+.modal-btns{display:flex;gap:10px}
+.modal-btns .btn{padding:12px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">MAX</div>
+  <div class="hdr-center">
+    <div class="status-dot off" id="sdot"></div>
+    <span class="status-label" id="slabel">connecting…</span>
+  </div>
+  <div class="hdr-btns">
+    <button class="hdr-btn" id="tm-btn" onclick="openTM()" title="Task manager">⚡</button>
+    <button class="hdr-btn" id="stop-btn" onclick="stopAllTasks()" title="Stop all tasks" style="color:#ef4444">⏹</button>
+    <button class="hdr-btn" id="desktop-btn" onclick="toggleDesktop()" title="Desktop view">🖥️</button>
+    <button class="hdr-btn" id="tts-btn" onclick="toggleTTS()" title="Toggle TTS">🔊</button>
+    <button class="hdr-btn" onclick="resetSession()" title="New chat">⟳</button>
+  </div>
+</header>
+
+<div id="app-wrap">
+  <div id="chat-col">
+    <div id="msgs">
+      <div class="msg ai">
+        <div class="bubble">Hey, I'm MAX. Say <strong>MAX</strong> to activate voice — or just type.<br><br>I can send emails, generate images &amp; videos, make presentations, browse the web, automate tasks, and much more.</div>
+        <div class="msg-time" id="welcome-time"></div>
+      </div>
+    </div>
+
+    <div id="bar">
+      <button class="circ-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
+      <textarea id="tinput" placeholder="Message MAX…" rows="1"
+        onkeydown="onKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="circ-btn" id="send-btn" onclick="send()">➤</button>
+    </div>
+  </div>
+
+  <div id="desktop-panel">
+    <div class="dp-hdr">
+      <span class="dp-live"></span>
+      <span class="dp-title">Live Desktop</span>
+      <span class="dp-age" id="dp-age">–</span>
+    </div>
+    <div id="dp-placeholder">
+      <span style="font-size:2rem">🖥️</span>
+      <span>Loading snapshot…</span>
+    </div>
+    <img id="desktop-img" src="" alt="" style="display:none" onclick="onDesktopClick(event)">
+  </div>
+</div>
+
+<div id="voice-hint">🎤 Tap anywhere to enable voice</div>
+
+<!-- Voice overlay -->
+<div id="voice-overlay">
+  <div class="vorb"></div>
+  <div id="vtext">Listening…</div>
+  <button class="vcancel" onclick="cancelVoice()">Cancel</button>
+</div>
+
+<!-- Task manager modal -->
+<div id="task-modal">
+  <div class="tm-panel">
+    <div class="tm-header">
+      <h2>⚡ Task Manager</h2>
+      <div class="tm-actions">
+        <button class="btn btn-secondary" style="padding:5px 12px;font-size:.78rem" onclick="tmStopAll()">Stop All ⏹</button>
+        <button class="btn btn-secondary" style="padding:5px 12px;font-size:.78rem" onclick="closeTM()">✕</button>
+      </div>
+    </div>
+    <div class="tm-legend">
+      <span><span class="tm-status running" style="display:inline-block"></span>running</span>
+      <span><span class="tm-status done" style="display:inline-block"></span>done</span>
+      <span><span class="tm-status stopped" style="display:inline-block"></span>stopped</span>
+    </div>
+    <div class="tm-table" id="tm-list">
+      <div class="tm-empty">No tasks yet.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Input modal -->
+<div class="modal-wrap" id="inp-modal">
+  <div class="modal">
+    <h2>🔐 Input Required</h2>
+    <p class="modal-p" id="inp-prompt"></p>
+    <input class="modal-input" id="inp-field"
+      autocomplete="one-time-code" spellcheck="false">
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="cancelInput()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitInput()">Submit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let ws = null, sessId = null;
+let typingEl = null, lastToolEl = null;
+let ttsOn = true, ttsQueue = [], ttsPlaying = false, curAudio = null;
+let recog = null, listening = false, wakeMode = false;
+let pendingInputId = null;
+let isBusy = false;  // tracks if Claude is running (visual only, doesn't block)
+
+// ── Time ──
+document.getElementById('welcome-time').textContent = fmt(new Date());
+function fmt(d){return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+
+// ── WebSocket ──────────────────────────────────────────────────────────────
+function connect(){
+  const proto = location.protocol==='https:'?'wss':'ws';
+  ws = new WebSocket(`${proto}://${location.host}/ws`);
+  ws.onopen = ()=>{
+    setStatus(true);
+    initSpeech();
+  };
+  ws.onclose = ()=>{setStatus(false); setTimeout(connect,2500)};
+  ws.onmessage = e => handle(JSON.parse(e.data));
+}
+
+function setStatus(ok){
+  document.getElementById('sdot').className = 'status-dot'+(ok?'':' off');
+  document.getElementById('slabel').textContent = ok?'online':'reconnecting…';
+}
+
+function handle(msg){
+  switch(msg.type){
+    case 'event':       onClaudeEvent(msg.data); break;
+    case 'tts':         if(ttsOn && msg.text) enqueueTTS(msg.text); break;
+    case 'ack':
+      if(msg.text){ updateTyping(msg.text); if(ttsOn) enqueueTTS(msg.text); }
+      break;
+    case 'done':        onDone(msg.session_id); break;
+    case 'input_required': showInputModal(msg); break;
+    case 'plan_proposal':  showPlanCard(msg.plan); break;
+    case 'reset_ok':    clearChat(); break;
+    case 'stopped':
+      stopTTS();
+      setBusy(false);
+      finishTyping();
+      addMsg('ai','All tasks stopped.');
+      break;
+    case 'user_message': addMsg('user', msg.text); break;
+    case 'notification': onNotification(msg.text); break;
+  }
+}
+
+function onNotification(text){
+  // Show as special AI bubble + always speak
+  const msgs=document.getElementById('msgs');
+  const d=document.createElement('div');
+  d.className='msg ai';
+  d.innerHTML=`<div class="bubble" style="border-color:var(--accent);background:var(--surface2)">${fmt_text(text)}</div><div class="msg-time">${fmt(new Date())}</div>`;
+  msgs.appendChild(d);
+  scrollBot();
+  if(ttsOn) enqueueTTS(text);
+}
+
+function onClaudeEvent(evt){
+  const t = evt.type;
+  if(t==='assistant'){
+    for(const b of (evt.message?.content||[])){
+      if(b.type==='text' && b.text) updateTyping(b.text);
+      if(b.type==='tool_use') addToolCard(b.name);
+    }
+  } else if(t==='tool_result'){
+    finishToolCard();
+  }
+}
+
+function onDone(sid){
+  if(sid) sessId = sid;
+  finishTyping();
+  setBusy(false);
+}
+
+// ── Sending ────────────────────────────────────────────────────────────────
+function send(text){
+  const inp = document.getElementById('tinput');
+  const msg = text || inp.value.trim();
+  if(!msg || !ws || ws.readyState!==1) return;
+  inp.value=''; autoResize(inp);
+  _ttsMuted = false;   // a new request un-mutes voice
+  stopTTS();
+  addMsg('user', msg);
+  // Only start a new typing indicator if none is active
+  if(!typingEl) startTyping();
+  setBusy(true);
+  ws.send(JSON.stringify({type:'message', text:msg}));
+}
+
+function onKey(e){
+  if(e.key==='Enter' && !e.shiftKey){e.preventDefault(); send();}
+}
+
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,130)+'px';
+}
+
+function setBusy(on){
+  isBusy = on;
+  document.getElementById('send-btn').classList.toggle('busy', on);
+}
+
+// ── Message rendering ──────────────────────────────────────────────────────
+function addMsg(role, text){
+  const msgs=document.getElementById('msgs');
+  const d=document.createElement('div');
+  d.className=`msg ${role}`;
+  d.innerHTML=`<div class="bubble">${fmt_text(text)}</div><div class="msg-time">${fmt(new Date())}</div>`;
+  msgs.appendChild(d);
+  scrollBot();
+  return d;
+}
+
+function fmt_text(t){
+  t=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t=t.replace(/```[\w]*\n([\s\S]*?)```/g,'<pre>$1</pre>');
+  t=t.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  t=t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  t=t.replace(/\*(.+?)\*/g,'<em>$1</em>');
+  return t;
+}
+
+function startTyping(){
+  const msgs=document.getElementById('msgs');
+  if(typingEl) typingEl.remove();
+  const d=document.createElement('div');
+  d.className='msg ai';
+  d.id='typing-el';
+  d.innerHTML=`<div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(d);
+  typingEl=d;
+  scrollBot();
+}
+
+function updateTyping(text){
+  if(!typingEl) startTyping();
+  typingEl.querySelector('.bubble').innerHTML=fmt_text(text);
+  scrollBot();
+}
+
+function finishTyping(){
+  if(typingEl){
+    typingEl.id='';
+    const time=document.createElement('div');
+    time.className='msg-time';
+    time.textContent=fmt(new Date());
+    typingEl.appendChild(time);
+    typingEl=null;
+  }
+}
+
+function addToolCard(name){
+  const msgs=document.getElementById('msgs');
+  if(lastToolEl) lastToolEl.classList.add('done');
+  const d=document.createElement('div');
+  d.className='tool-card';
+  d.innerHTML=`<span>⚙️</span><span class="tc-name">${name}</span><span class="tc-status">running…</span>`;
+  if(typingEl) msgs.insertBefore(d, typingEl);
+  else msgs.appendChild(d);
+  lastToolEl=d;
+  scrollBot();
+}
+
+function finishToolCard(){
+  if(lastToolEl){
+    lastToolEl.querySelector('.tc-status').textContent='✓';
+    lastToolEl.classList.add('done');
+    lastToolEl=null;
+  }
+}
+
+function showPlanCard(plan){
+  const msgs=document.getElementById('msgs');
+  const card=document.createElement('div');
+  card.className='plan-card';
+  const steps=(plan.steps||[]).map(s=>`
+    <div class="plan-step">
+      <div class="sn">${s.n||s.step||'•'}</div>
+      <div>${s.action||s.description||''}</div>
+    </div>`).join('');
+  const risks=plan.risks?`<div class="plan-risks">⚠️ ${plan.risks}</div>`:'';
+  card.innerHTML=`
+    <h3>📋 Plan</h3>
+    <div class="plan-goal">${plan.goal||''}</div>
+    <div class="plan-steps">${steps}</div>
+    ${risks}
+    <div class="plan-btns">
+      <button class="btn btn-secondary" onclick="replyPlan(this,'No, cancel')">Cancel</button>
+      <button class="btn btn-primary" onclick="replyPlan(this,'Yes, proceed with this plan')">Approve ✓</button>
+    </div>`;
+  if(typingEl) msgs.insertBefore(card, typingEl);
+  else msgs.appendChild(card);
+  scrollBot();
+}
+
+function replyPlan(btn, response){
+  const card=btn.closest('.plan-card');
+  card.querySelector('.plan-btns').remove();
+  card.style.opacity='.6';
+  send(response);
+}
+
+function clearChat(){
+  const msgs=document.getElementById('msgs');
+  msgs.innerHTML='<div class="msg ai"><div class="bubble">New conversation started.</div></div>';
+  sessId=null; typingEl=null; lastToolEl=null;
+}
+
+function scrollBot(){
+  const msgs=document.getElementById('msgs');
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+// ── TTS ────────────────────────────────────────────────────────────────────
+function toggleTTS(){
+  ttsOn=!ttsOn;
+  document.getElementById('tts-btn').textContent=ttsOn?'🔊':'🔇';
+  if(!ttsOn){ _synth.cancel(); ttsQueue=[]; ttsPlaying=false; }
+}
+
+// ── TTS — browser-native speechSynthesis (zero network latency) ───────────
+const _synth = window.speechSynthesis;
+let _ttsVoice = null;
+
+function _pickVoice(){
+  const voices = _synth.getVoices();
+  // Prefer: Google US English > Microsoft Aria/Guy (Edge) > any en-US
+  _ttsVoice =
+    voices.find(v => v.name === 'Google US English') ||
+    voices.find(v => v.name.includes('Aria'))        ||
+    voices.find(v => v.name.includes('Microsoft') && v.lang === 'en-US') ||
+    voices.find(v => v.lang === 'en-US')             ||
+    voices.find(v => v.lang.startsWith('en'))        ||
+    null;
+}
+_synth.onvoiceschanged = _pickVoice;
+_pickVoice();
+
+let _ttsMuted = false;   // set by "shut up" — drops incoming voice until next user message
+
+function enqueueTTS(text){
+  if(!ttsOn || _ttsMuted) return;
+  const clean = text
+    .replace(/MAX_PLAN:[\s\S]*?\}/g,'')
+    .replace(/```[\s\S]*?```/g,'code block')
+    .replace(/`[^`]+`/g,'')
+    .replace(/https?:\/\/\S+/g,'link')
+    .replace(/[*_#\-]/g,'')
+    .replace(/\n+/g,' ')
+    .trim().substring(0, 500);
+  if(!clean) return;
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.rate  = 1.08;   // slightly faster than default
+  utt.pitch = 1.0;
+  utt.volume = 1.0;
+  if(_ttsVoice) utt.voice = _ttsVoice;
+  _synth.speak(utt);
+}
+
+function stopTTS(){
+  _synth.cancel();
+  // legacy fields — keep so nothing else breaks
+  ttsQueue=[]; ttsPlaying=false; curAudio=null;
+}
+
+function playTTS(){} // no-op — speechSynthesis queues internally
+
+// ── STT / Voice ────────────────────────────────────────────────────────────
+let _restartTimer = null;   // debounce handle for recognition restarts
+let _gestureAdded = false;  // prevent duplicate gesture listeners
+let _micState = '';         // track current state to suppress no-op setMicState calls
+
+function initSpeech(){
+  if(recog) return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR) return;
+  recog=new SR();
+  recog.continuous=true;
+  recog.interimResults=true;
+  recog.lang='en-US';
+
+  let finalT='', silTimer=null;
+
+  recog.onresult=e=>{
+    let interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) finalT+=e.results[i][0].transcript;
+      else interim=e.results[i][0].transcript;
+    }
+    const full=(finalT+interim).trim();
+
+    // Wake word detection
+    const low=full.toLowerCase();
+    const maxIdx=low.indexOf('max');
+    if(!wakeMode && maxIdx!==-1){
+      const after=full.slice(maxIdx+3).trim();
+      finalT='';
+      activateWake();
+      if(after.length>2){
+        document.getElementById('vtext').textContent=after;
+        clearTimeout(silTimer);
+        silTimer=setTimeout(()=>sendVoice(after),1300);
+      }
+      return;
+    }
+
+    if(wakeMode){
+      document.getElementById('vtext').textContent=full||'Listening…';
+      clearTimeout(silTimer);
+      if(finalT.trim()){
+        silTimer=setTimeout(()=>{
+          const t=finalT.trim(); finalT='';
+          sendVoice(t);
+        },1500);
+      }
+    } else {
+      document.getElementById('tinput').value=full;
+      autoResize(document.getElementById('tinput'));
+    }
+  };
+
+  recog.onerror=e=>{
+    // 'aborted' = we called start() before the previous session fully closed.
+    // Totally normal during rapid restarts — never change UI state for this.
+    if(e.error==='aborted' || e.error==='no-speech') return;
+
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){
+      // Mic permission denied — stop trying
+      setMicState('idle');
+      listening=false;
+    } else {
+      // Other errors (network, audio-capture, etc.) — stay in wake state,
+      // let onend handle the restart without flickering the button
+    }
+  };
+
+  recog.onend=()=>{
+    if(!listening) return;
+    // Debounce restart: wait 300ms so the previous session fully tears down
+    // before calling start() again, which prevents the 'aborted' error loop.
+    clearTimeout(_restartTimer);
+    _restartTimer = setTimeout(()=>{
+      if(!listening) return;
+      finalT = '';  // clear stale transcript on restart
+      try{
+        recog.start();
+      }catch(err){
+        // On mobile, start() can fail if browser requires a fresh gesture.
+        // Fall back to idle and let the user tap the mic button.
+        listening = false;
+        setMicState('idle');
+      }
+    }, 300);
+  };
+
+  // Try auto-start immediately (works if mic permission already granted)
+  tryAutoStart();
+}
+
+function tryAutoStart(){
+  if(!recog || listening) return;
+  try{
+    recog.start();
+    listening=true;
+    setMicState('wake');
+  }catch(e){
+    // Need a user gesture first — show hint once and add listeners once
+    if(!_gestureAdded){
+      _gestureAdded=true;
+      const hint=document.getElementById('voice-hint');
+      hint.style.display='block';
+      setTimeout(()=>{hint.style.display='none'},4000);
+
+      const onGesture=()=>{
+        ['click','touchstart','keydown'].forEach(ev=>
+          document.removeEventListener(ev,onGesture));
+        _gestureAdded=false;
+        tryAutoStart();
+      };
+      ['click','touchstart','keydown'].forEach(ev=>
+        document.addEventListener(ev,onGesture,{passive:true}));
+    }
+  }
+}
+
+function toggleMic(){
+  if(!recog){
+    initSpeech();
+    if(!recog){alert('Speech recognition requires Chrome or Edge'); return}
+  }
+  if(listening){
+    listening=false; wakeMode=false;
+    try{recog.stop()}catch{}
+    cancelVoice(); setMicState('idle');
+  } else {
+    tryAutoStart();
+  }
+}
+
+function activateWake(){
+  wakeMode=true;
+  document.getElementById('voice-overlay').classList.add('on');
+  document.getElementById('vtext').textContent='Listening…';
+  stopTTS();
+}
+
+function cancelVoice(){
+  wakeMode=false;
+  document.getElementById('voice-overlay').classList.remove('on');
+}
+
+// Commands that stop TTS audio only (task keeps running)
+const TTS_STOP_CMDS  = ['shut up','stop talking','be quiet','silence','stop speaking','quiet'];
+// Commands that stop ALL tasks + TTS
+const TASK_STOP_CMDS = ['stop everything','stop all','cancel everything','stop all tasks','stop task','cancel task'];
+
+function sendVoice(text){
+  cancelVoice();
+  if(!text) return;
+  const low = text.toLowerCase();
+
+  // Full task stop — kills backend tasks
+  if(TASK_STOP_CMDS.some(cmd => low.includes(cmd))){
+    stopTTS();
+    stopAllTasks();
+    return;
+  }
+  // TTS-only stop — task keeps running. Mute locally AND tell the backend to stop sending voice.
+  if(TTS_STOP_CMDS.some(cmd => low.includes(cmd))){
+    _ttsMuted = true;
+    stopTTS();
+    if(ws && ws.readyState === 1) ws.send(JSON.stringify({type:'mute_tts'}));
+    return;
+  }
+  send(text);
+}
+
+function stopAllTasks(){
+  if(ws && ws.readyState === 1){
+    ws.send(JSON.stringify({type:'stop'}));
+    stopTTS();
+  }
+}
+
+function setMicState(s){
+  if(s === _micState) return;  // no DOM write if state didn't change
+  _micState = s;
+  const b=document.getElementById('mic-btn');
+  b.className='circ-btn'+(s==='listening'?' listening':s==='wake'?' wake':'');
+  b.textContent=s==='listening'?'⏹':'🎤';
+}
+
+// ── Input modal ────────────────────────────────────────────────────────────
+function showInputModal(msg){
+  pendingInputId=msg.input_id||null;
+  document.getElementById('inp-prompt').textContent=msg.prompt||'Enter value:';
+  const f=document.getElementById('inp-field');
+  f.type=msg.input_type==='password'?'password':msg.input_type==='otp'?'tel':'text';
+  f.value='';
+  document.getElementById('inp-modal').classList.add('on');
+  setTimeout(()=>f.focus(),150);
+}
+
+function submitInput(){
+  const val=document.getElementById('inp-field').value.trim();
+  document.getElementById('inp-modal').classList.remove('on');
+  if(pendingInputId){
+    ws.send(JSON.stringify({type:'input_response',input_id:pendingInputId,value:val}));
+    pendingInputId=null;
+  } else {
+    send(`The code is: ${val}`);
+  }
+}
+
+function cancelInput(){
+  document.getElementById('inp-modal').classList.remove('on');
+  pendingInputId=null;
+}
+
+document.getElementById('inp-field').addEventListener('keydown',e=>{
+  if(e.key==='Enter') submitInput();
+});
+
+// ── Session ────────────────────────────────────────────────────────────────
+function resetSession(){
+  if(!ws||ws.readyState!==1) return;
+  stopTTS(); cancelVoice();
+  ws.send(JSON.stringify({type:'reset'}));
+}
+
+// ── Task manager ──────────────────────────────────────────────────────────
+let _tmTimer = null;
+
+function openTM(){
+  document.getElementById('task-modal').classList.add('on');
+  tmRefresh();
+  _tmTimer = setInterval(tmRefresh, 2000);
+}
+function closeTM(){
+  document.getElementById('task-modal').classList.remove('on');
+  clearInterval(_tmTimer); _tmTimer = null;
+}
+
+async function tmRefresh(){
+  try{
+    const r = await fetch('/api/tasks');
+    const {tasks} = await r.json();
+    const el = document.getElementById('tm-list');
+    if(!tasks.length){
+      el.innerHTML = '<div class="tm-empty">No tasks yet.</div>';
+      // update header badge
+      document.getElementById('tm-btn').style.color='';
+      return;
+    }
+    const running = tasks.filter(t=>t.status==='running').length;
+    document.getElementById('tm-btn').style.color = running ? 'var(--success)' : '';
+    el.innerHTML = tasks.slice().reverse().map(t=>{
+      const elapsed = Math.round(Date.now()/1000 - t.started);
+      const killBtn = t.status==='running'
+        ? `<button class="tm-kill" onclick="tmKill('${t.id}')">Kill</button>`
+        : '';
+      return `<div class="tm-row">
+        <span class="tm-status ${t.status}"></span>
+        <span class="tm-desc" title="${t.desc}">${t.desc}</span>
+        <span class="tm-time">${elapsed}s</span>
+        ${killBtn}
+      </div>`;
+    }).join('');
+  }catch{}
+}
+
+async function tmKill(id){
+  await fetch(`/api/tasks/${id}/stop`,{method:'POST'});
+  tmRefresh();
+}
+
+async function tmStopAll(){
+  stopAllTasks();
+  await fetch('/api/tasks/stop-all',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({room:'default'})
+  });
+  tmRefresh();
+}
+
+// ── Desktop live preview ───────────────────────────────────────────────────
+let desktopOn = false, dpTimer = null, dpLastT = 0, dpW = 1920, dpH = 1080;
+
+function toggleDesktop(){
+  desktopOn = !desktopOn;
+  document.getElementById('desktop-panel').classList.toggle('on', desktopOn);
+  document.getElementById('desktop-btn').classList.toggle('active', desktopOn);
+  if(desktopOn){
+    refreshDesktop();
+    dpTimer = setInterval(refreshDesktop, 3500);
+  } else {
+    clearInterval(dpTimer); dpTimer = null;
+    dpLastT = 0;
+  }
+}
+
+function refreshDesktop(){
+  const t = Date.now();
+  const probe = new Image();
+  probe.onload = () => {
+    dpW = probe.naturalWidth || 1920;
+    dpH = probe.naturalHeight || 1080;
+    const img = document.getElementById('desktop-img');
+    const ph  = document.getElementById('dp-placeholder');
+    img.src = probe.src;
+    img.style.display = 'block';
+    ph.style.display  = 'none';
+    if(dpLastT){
+      const s = ((t - dpLastT)/1000).toFixed(1);
+      document.getElementById('dp-age').textContent = s + 's ago';
+    }
+    dpLastT = t;
+  };
+  probe.onerror = () => {
+    document.getElementById('dp-age').textContent = 'error';
+  };
+  probe.src = `/desktop/snapshot?_=${t}`;
+}
+
+function onDesktopClick(e){
+  // Calculate where on the actual screen the user clicked
+  const img = document.getElementById('desktop-img');
+  const rect = img.getBoundingClientRect();
+  const scaleX = dpW / rect.width;
+  const scaleY = dpH / rect.height;
+  const x = Math.round((e.clientX - rect.left) * scaleX);
+  const y = Math.round((e.clientY - rect.top)  * scaleY);
+  if(ws && ws.readyState === 1){
+    ws.send(JSON.stringify({type:'message', text:`Click the desktop at coordinates ${x}, ${y} using pc_control`}));
+    if(!typingEl) startTyping();
+    setBusy(true);
+  }
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+connect();
+document.getElementById('tinput').focus();
+</script>
+</body>
+</html>
