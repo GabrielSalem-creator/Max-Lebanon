@@ -437,20 +437,41 @@ async def escalate_task(p: dict) -> str:
 
 # ── Email ──────────────────────────────────────────────────────────────────
 async def send_email(p: dict) -> str:
-    import httpx
-    async with httpx.AsyncClient(timeout=15) as c:
+    """Send email via Resend. Supports file attachments via 'attachment' (path) or 'attachments' (list of paths)."""
+    import httpx, base64 as _b64
+    payload = {
+        "from": "MAX <onboarding@resend.dev>",
+        "to": [p.get("to", USER_EMAIL)],
+        "subject": p.get("subject", ""),
+        "html": p.get("body", p.get("html", p.get("text", ""))),
+    }
+    # Support single attachment path or list
+    attach_paths = []
+    if p.get("attachment"):
+        attach_paths.append(p["attachment"])
+    if p.get("attachments"):
+        attach_paths.extend(p["attachments"] if isinstance(p["attachments"], list) else [p["attachments"]])
+    if attach_paths:
+        attachments = []
+        for path in attach_paths:
+            try:
+                fp = Path(path)
+                if fp.exists():
+                    content = _b64.b64encode(fp.read_bytes()).decode()
+                    attachments.append({"filename": fp.name, "content": content})
+            except Exception:
+                pass
+        if attachments:
+            payload["attachments"] = attachments
+    async with httpx.AsyncClient(timeout=30) as c:
         r = await c.post(
             "https://api.resend.com/emails",
             headers={"Authorization": f"Bearer {RESEND_KEY}"},
-            json={
-                "from": "MAX <onboarding@resend.dev>",
-                "to": [p.get("to", USER_EMAIL)],
-                "subject": p.get("subject", ""),
-                "html": p.get("body", p.get("html", p.get("text", ""))),
-            }
+            json=payload,
         )
     if r.status_code in (200, 201):
-        return f"✓ Email sent to {p.get('to', USER_EMAIL)} | id={r.json().get('id','ok')}"
+        att_note = f" with {len(attach_paths)} attachment(s)" if attach_paths else ""
+        return f"✓ Email sent to {p.get('to', USER_EMAIL)}{att_note} | id={r.json().get('id','ok')}"
     return f"✗ send_email failed ({r.status_code}): {r.text[:300]}"
 
 

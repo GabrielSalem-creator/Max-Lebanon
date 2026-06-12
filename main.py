@@ -521,6 +521,31 @@ async def _refresh_fast_facts():
             )
     except Exception:
         pass
+    # ── Lebanon fuel prices (scraped live) ──────────────────────────────────
+    try:
+        import httpx as _hx
+        async with _hx.AsyncClient(timeout=12, follow_redirects=True, headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36"
+        }) as c:
+            r = await c.get("https://www.globalpetrolprices.com/Lebanon/gasoline_prices/")
+            html = r.text
+            # extract LBP per liter from GlobalPetrolPrices
+            m_lbp = re.search(r"(\d[\d,]+\.?\d*)\s*LBP[^/]*/Liter", html) or \
+                    re.search(r"Current price\s+([\d,]+\.?\d*)", html)
+            m_usd = re.search(r"USD\s*([\d.]+)\s*per liter", html)
+            # per 20L tank (standard Lebanon measure)
+            if m_lbp:
+                lbp_l = float(m_lbp.group(1).replace(",", ""))
+                lbp_20 = int(lbp_l * 20)
+                usd_part = f" (about ${round(m_usd.group(1) if m_usd else '1.24', 2)} USD per liter)" if m_usd else ""
+                facts["fuel"] = (
+                    f"Current Lebanon fuel price: about {int(lbp_l):,} LBP per liter{usd_part}. "
+                    f"A standard 20-litre fill-up costs around {lbp_20:,} LBP. "
+                    f"Prices update weekly from the official energy authority."
+                )
+    except Exception:
+        pass
+
     # News headlines (from the daily cache if present)
     try:
         if NEWS_FILE.exists():
@@ -843,6 +868,17 @@ def _try_instant_fact(text: str) -> Optional[str]:
         if w:
             return w
 
+    # ── FUEL PRICE — Lebanon specific, served from hourly-refreshed cache ──
+    if any(p in t for p in ("fuel", "essence", "benzine", "بنزين", "محروقات",
+                            "gas price", "petrol", "diesel", "gasoline",
+                            "price of oil", "oil tank", "fuel tank", "fill up",
+                            "price of fuel", "price of gas", "litre", "liter",
+                            "مازوت", "dizel", "prix carburant", "prix essence")):
+        if _fast_facts.get("fuel"):
+            return _fast_facts["fuel"]
+        # Not cached yet — fetch live right now (first call)
+        return None  # will fall through to Claude which will search it
+
     # ── LEBANON cached topics — TIGHT phrases only (no bare "fun"/"summer"/"safe"
     #    that misfire on casual talk). Served from the pre-summarized cache. ──
     lf = _fast_facts
@@ -1106,11 +1142,21 @@ async def _chatz_front_door(text: str, ws: WebSocket, room: str) -> str:
     # Short prompt — chat-z is a small model and ignores long, rule-heavy prompts
     # (it falls back to canned greetings). Tasks are already gated out by _is_agentic,
     # and Lebanon facts are served by _try_instant_fact, so this only needs to chat.
+    # IMPORTANT: chatz must NEVER answer factual questions about prices, news,
+    # traffic, or current events — those require real data and must go to Claude.
+    factual_block = any(w in text.lower() for w in (
+        "news", "price", "fuel", "traffic", "explosion", "war", "bomb",
+        "weather", "temperature", "أخبار", "سعر", "بنزين", "actualité", "prix"
+    ))
+    if factual_block:
+        return "empty"   # fall through to Claude which will search real data
+
     prompt = (
         "You are MAX, a warm voice assistant for Gabriel in Lebanon. "
         "Reply to his message in two or three short, natural spoken sentences. "
         "Be friendly and direct. No markdown. "
-        "Do not bring up Lebanon, travel, restaurants, or activities unless he asked about them. "
+        "Do NOT answer questions about news, prices, fuel, traffic, weather, or current events — "
+        "those need real data you don't have. Only answer casual chat and personal questions. "
         f"{ctx}\n\nGabriel: {text}"
     )
     reply = (await _chat_z(prompt, timeout=12)).strip()

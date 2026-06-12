@@ -55,5 +55,194 @@
   "uses": 1,
   "created": 1781301379,
   "last_used": 1781301379
+ },
+ {
+  "id": "t1781301926641",
+  "intent": "hey Max can you generate the high quality PowerPoint with a good images related to Lebanon and how to attract the visitories and tourists and send it to my emai",
+  "keywords": [
+   "attract",
+   "email",
+   "generate",
+   "good",
+   "high",
+   "how",
+   "images",
+   "lebanon",
+   "powerpoint",
+   "quality",
+   "related",
+   "send",
+   "telegram",
+   "tourists",
+   "visitories"
+  ],
+  "commands": [
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py task_create '{\"id\":\"lb-pptx\",\"name\":\"Lebanon Tourism PowerPoint\",\"description\":\"Generate images, create PPT, send via email and Telegram\"}'",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py generate_image '{\"prompt\":\"Breathtaking aerial view of Beirut Lebanon skyline at sunset with Mediterranean Sea coastline, golden hour light, modern city meets ancient history, ultra high quality photorealistic\"}' &\npython tools.py generate_image '{\"prompt\":\"The majestic Cedars of God in Lebanon Bsharri mountains, ancient cedar trees snow-capped peaks, mystical morning mist, UNESCO world heritage, ultra high quality\"}' &\npython tools.py generate_image '{\"prompt\":\"Roman ruins of Baalbek Lebanon, Jupiter temple massive columns at golden sunset, archaeological wonder, dramatic sky, ultra high quality photorealistic\"}' &\npython tools.py generate_image '{\"prompt\":\"Jeita Grotto Lebanon stunning underground cave with crystal blue water and stalactites, magical lighting, wonder of the world, ultra high quality photorealistic\"}' &\nwait\necho \"IMAGES BATCH 1 DONE\"",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py generate_image '{\"prompt\":\"Traditional Lebanese mezze feast spread on table, hummus tabbouleh kibbeh fattoush colorful dishes, authentic cuisine food photography, warm restaurant ambiance, ultra high quality\"}' &\npython tools.py generate_image '{\"prompt\":\"Byblos ancient harbor Lebanon, colorful fishing boats old Phoenician port, crusader castle ruins, turquoise Mediterranean water, ultra high quality photorealistic\"}' &\npython tools.py generate_image '{\"prompt\":\"Skiing in Mzaar Kfardebian Lebanon ski resort, snowy slopes mountains Mediterranean view in background, winter sports adventure, ultra high quality\"}' &\npython tools.py generate_image '{\"prompt\":\"Lebanese cultural heritage, traditional Dabke folk dance performers in colorful costumes, festival celebration, vibrant culture, ultra high quality photorealistic\"}' &\nwait\necho \"IMAGES BATCH 2 DONE\"",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py generate_powerpoint '{\n  \"title\": \"Discover Lebanon — The Jewel of the Middle East\",\n  \"subtitle\": \"A Timeless Destination for Every Traveler\",\n  \"theme\": \"professional\",\n  \"output\": \"C:/tmp/Lebanon_Tourism_2026.pptx\",\n  \"cover_image\": \"https://max.vdo-x.art/img/img_1781301858506.jpg\",\n  \"slides\": [\n    {\n      \"title\": \"Why Lebanon?\",\n      \"bullets\": [\n        \"4,000+ years of living history\",\n        \"Beaches and ski slopes just 45 minutes apart\",\n        \"Ranked among the world'\\''s top food destinations\",\n        \"Warm, welcoming people and vibrant nightlife\",\n        \"UNESCO World Heritage Sites and natural wonders\"\n      ],\n      \"image\": \"https://max.vdo-x.art/img/img_1781301858506.jpg\"\n    },\n    {\n      \"title\": \"The Cedars of God — Ancient Giants\",\n      \"bullets\": [\n        \"One of the oldest forests on Earth — over 3,000 years old\",\n        \"UNESCO World Heritage Site in Bsharri\",\n        \"Symbol of Lebanon on the national flag\",\n        \"Surrounded by dramatic mountain scenery\",\n        \"Perfect for hiking, photography & spiritual retreats\"\n      ],\n      \"image\": \"https://max.vdo-x.art/img/img_1781301858620.jpg\"\n    },\n    {\n      \"title\": \"Baalbek — Rome'\\''s Greatest Temple Complex\",\n      \"bullets\": [\n        \"The largest Roman ruins in the world\",\n        \"Temple of Jupiter: 6 colossal columns still standing\",\n        \"UNESCO World Heritage Site\",\n        \"Baalbek International Festival — world-class performances\",\n        \"A must-see architectural wonder of antiquity\"\n      ],\n      \"image\": \"https://max.vdo-x.art/img/img_1781301858809.jpg\"\n    },\n    {\n      \"title\": \"Jeita Grotto — Natural Wonder\",\n      \"bullets\": [\n        \"Two interconnected karst limestone caves\",\n        \"Upper cave: longest cave in the Middle East (8.9 km)\",\n        \"Lower cave: stunning underground boat ride\",\n        \"Finalist for New 7 Wonders of Nature\",\n        \"A magical, otherworldly experience\"\n      ],\n      \"image\": \"https://max.vdo-x.art/img/img_1781301858846.jpg\"\n    },\n    {\n      \"title\": \"Lebanese Cuisine — A World-Renowned Feast\",\n      \"bullets\": [\n        \"Ranked among the top 10 cuisines globally\",\n        \"Fresh mezze: hummus, tabbouleh, kibbeh, fattoush\",\n        \"World-famous street food: shawarma, falafel, manoushe\",\n        \"Award-winning Lebanese wines from the Bekaa Valley\",\n        \"Cooking classes and culinary tours available\"\n      ],\n      \"image\": \"https://max.vdo-x.art/img/img_1781301869285.jpg\"\n    },\n    {\n      \"title\": \"Byblos — World'\\''s Oldest City\",\n      \"bullets\": [\n        \"Continuously inhabited for over 7,000 years\",\n        \"Birthplace of the Phoenician alphabet\",\n        \"Picturesque ancient harbor with fishing boats\",\n        \"Crusader Castle, Roman ruins & Phoenician temples\",\n        \"Charming souk, seafood restaurants & vibrant nightlife\"\n      ],\n      \"image\": \"https://max.vdo-x.art/img/img_1781301869851.jpg\"\n    },\n    {\n      \"title\": \"Adventure — Ski, Hike, Dive & More\",\n      \"bullets\": [\n        \"5 ski resorts open December–April (Mzaar, The Cedars…)\",\n        \"Mediterranean Sea visible from the slopes\",\n        \"270+ km of hiking trails across mountains & valleys\",\n        \"Scuba diving, paragliding & canyoning\",\n        \"Mountain biking in Faraya & the Qadisha Valley\"\n      ],\n      \"image\": \"https://max.vdo-x.art/img/img_1781301870035.jpg\"\n    },\n    {\n      \"title\": \"Culture & Festivals — A Living Heritage\",\n      \"bullets\": [\n        \"Dabke folk dance — energetic, joyful & deeply rooted\",\n        \"Baalbek International Festival — July & August\",\n        \"Byblos International Festival — music under the stars\",\n        \"Tyre & Beiteddine Cultural Festivals\",\n        \"Lebanese music, art galleries & creative scene in Beirut\"\n      ],\n      \"image\": \"https://max.vdo-x.art/img/img_1781301870721.jpg\"\n    },\n    {\n      \"title\": \"Plan Your Visit to Lebanon\",\n      \"bullets\": [\n        \"Best time: April–June and September–October\",\n        \"International flights via Beirut Rafic Hariri Airport\",\n        \"Visa on arrival for 50+ nationalities\",\n        \"Currency: Lebanese Pound & USD accepted everywhere\",\n        \"Stay: boutique hotels, heritage guesthouses & luxury resorts\"\n      ],\n      \"image\": \"https://max.vdo-x.art/img/img_1781301858506.jpg\"\n    }\n  ]\n}'",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py send_email '{\n  \"to\": \"gabriel.salem2008@outlook.com\",\n  \"subject\": \"Discover Lebanon — Tourism Presentation 2026\",\n  \"body\": \"<div style=\\\"font-family:Arial,sans-serif;max-width:600px;margin:auto\\\"><h1 style=\\\"color:#cc0000\\\">🇱🇧 Discover Lebanon</h1><h3 style=\\\"color:#555\\\">Your High-Quality Tourism PowerPoint is Ready</h3><p>Hi Gabriel,</p><p>Your Lebanon tourism presentation is attached! It includes <strong>9 beautifully designed slides</strong> covering:</p><ul><li>🏙️ Beirut — the Paris of the Middle East</li><li>🌲 The Cedars of God (UNESCO)</li><li>🏛️ Baalbek Roman ruins (UNESCO)</li><li>🌊 Jeita Grotto — Natural Wonder</li><li>🍽️ World-renowned Lebanese Cuisine</li><li>⛵ Ancient Byblos — oldest city on Earth</li><li>⛷️ Adventure: Skiing, Hiking & Diving</li><li>💃 Culture, Dabke & International Festivals</li><li>✈️ Practical travel planning tips</li></ul><p>All slides feature stunning AI-generated images tailored to each destination.</p><p style=\\\"color:#888;font-size:12px\\\">Generated by MAX — Your Autonomous AI Assistant</p></div>\",\n  \"attachment\": \"C:/tmp/Lebanon_Tourism_2026.pptx\"\n}' &\npython tools.py send_telegram '{\"message\": \"🇱🇧 *Discover Lebanon — Tourism Presentation Ready!*\\n\\nYour high-quality PowerPoint has been sent to your email.\\n\\n📊 *9 stunning slides covering:*\\n• Beirut skyline & city life\\n• Cedars of God (UNESCO)\\n• Baalbek Roman ruins (UNESCO)\\n• Jeita Grotto natural wonder\\n• Lebanese cuisine feast\\n• Ancient Byblos harbor\\n• Skiing, hiking & adventure\\n• Culture, Dabke & festivals\\n• Travel planning guide\\n\\nCheck gabriel.salem2008@outlook.com for the attachment! ✅\"}' &\nwait\necho \"SENT\"",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py send_email '{\n  \"to\": \"gsal4066@gmail.com\",\n  \"subject\": \"Discover Lebanon — Tourism Presentation 2026\",\n  \"body\": \"<div style=\\\"font-family:Arial,sans-serif;max-width:600px;margin:auto\\\"><h1 style=\\\"color:#cc0000\\\">Lebanon Tourism Presentation</h1><h3 style=\\\"color:#555\\\">Your High-Quality Tourism PowerPoint is Ready</h3><p>Hi Gabriel,</p><p>Your Lebanon tourism presentation is attached. It includes <strong>9 beautifully designed slides</strong> covering:</p><ul><li>Beirut — the Paris of the Middle East</li><li>The Cedars of God (UNESCO)</li><li>Baalbek Roman ruins (UNESCO)</li><li>Jeita Grotto — Natural Wonder</li><li>World-renowned Lebanese Cuisine</li><li>Ancient Byblos — oldest city on Earth</li><li>Adventure: Skiing, Hiking and Diving</li><li>Culture, Dabke and International Festivals</li><li>Practical travel planning tips</li></ul><p>All slides feature stunning AI-generated images tailored to each destination.</p><p style=\\\"color:#888;font-size:12px\\\">Generated by MAX</p></div>\",\n  \"attachment\": \"C:/tmp/Lebanon_Tourism_2026.pptx\"\n}'",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py task_update '{\"id\":\"lb-pptx\",\"status\":\"completed\",\"result\":\"9-slide Lebanon tourism PPT with 8 AI images created at C:/tmp/Lebanon_Tourism_2026.pptx. Sent to gsal4066@gmail.com and Telegram.\"}'"
+  ],
+  "uses": 1,
+  "created": 1781301926,
+  "last_used": 1781301926
+ },
+ {
+  "id": "t1781301998461",
+  "intent": "hey Max the generated PowerPoint the file.tpx send it to the email send the file to the email and send the file to the telegram",
+  "keywords": [
+   "email",
+   "file",
+   "generated",
+   "powerpoint",
+   "send",
+   "telegram",
+   "tpx"
+  ],
+  "commands": [
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py skill_list '{\"query\":\"telegram file document send\"}'",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py send_email '{\n  \"to\": \"gsal4066@gmail.com\",\n  \"subject\": \"Lebanon Tourism PowerPoint — File Attached\",\n  \"body\": \"<div style=\\\"font-family:Arial,sans-serif\\\"><h2 style=\\\"color:#cc0000\\\">Lebanon Tourism PowerPoint</h2><p>Hi Gabriel, the file is attached directly to this email. Open and enjoy!</p><p style=\\\"color:#888;font-size:12px\\\">Sent by MAX</p></div>\",\n  \"attachment\": \"C:/tmp/Lebanon_Tourism_2026.pptx\"\n}' &\npython tools.py send_telegram_document '{\"file\":\"C:/tmp/Lebanon_Tourism_2026.pptx\",\"caption\":\"Lebanon Tourism PowerPoint — here is the full file\"}' &\nwait\necho \"DONE\"",
+   "grep -i \"telegram.*token\\|bot.*token\\|TELEGRAM\" \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" | head -10",
+   "grep -n \"TG_TOKEN\\s*=\" \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" | head -5",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python -c \"\nimport os, asyncio, httpx\nfrom dotenv import load_dotenv\nload_dotenv()\nTG_TOKEN = os.environ['TG_TOKEN']\n\nasync def send_doc():\n    # Get chat_id first\n    async with httpx.AsyncClient(timeout=30) as c:\n        r = await c.get(f'https://api.telegram.org/bot{TG_TOKEN}/getUpdates')\n        data = r.json()\n        chat_id = None\n        for u in data.get('result', []):\n            msg = u.get('message') or u.get('channel_post')\n            if msg:\n                chat_id = msg['chat']['id']\n        if not chat_id:\n            chat_id = 7276104201\n        print(f'Sending to chat_id: {chat_id}')\n        with open('C:/tmp/Lebanon_Tourism_2026.pptx', 'rb') as f:\n            r2 = await c.post(\n                f'https://api.telegram.org/bot{TG_TOKEN}/sendDocument',\n                data={'chat_id': chat_id, 'caption': 'Lebanon Tourism PowerPoint - here is the full PPTX file'},\n                files={'document': ('Lebanon_Tourism_2026.pptx', f, 'application/vnd.openxmlformats-officedocument.presentationml.presentation')}\n            )\n        print(r2.status_code, r2.text[:300])\n\nasyncio.run(send_doc())\n\""
+  ],
+  "uses": 1,
+  "created": 1781301998,
+  "last_used": 1781301998
+ },
+ {
+  "id": "t1781302077346",
+  "intent": "what is the price of fuel in Lebanon today",
+  "keywords": [
+   "fuel",
+   "lebanon",
+   "price",
+   "today",
+   "what"
+  ],
+  "commands": [
+   "firecrawl search \"fuel price Lebanon today June 2026\" --sources news --tbs qdr:d -o .firecrawl/fuel-lebanon.json --json 2>&1",
+   "cat .firecrawl/fuel-lebanon.json 2>&1",
+   "firecrawl search \"اسعار البنزين لبنان 2026 هذا الاسبوع\" --limit 5 -o .firecrawl/fuel-lb2.json --json 2>&1 && cat .firecrawl/fuel-lb2.json | python -c \"import json,sys; d=json.load(sys.stdin); [print(r.get('title',''), r.get('url',''), r.get('snippet','')) for r in d.get('data',{}).get('web',[])]\"",
+   "firecrawl scrape \"https://www.aljadeed.tv/news/%D9%85%D8%AD%D9%84%D9%8A%D8%A7%D8%AA/561066/%D8%A7%D8%B1%D8%AA%D9%81%D8%A7%D8%B9-%D8%AC%D8%AF%D9%8A%D8%AF-%D9%81%D9%8A-%D8%A7%D9%84%D9%85%D8%AD%D8%B1%D9%88%D9%82%D8%A7%D8%AA-%D8%A5%D9%84%D9%8A%D9%83%D9%85-%D8%A7%D9%84%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1\" -o .firecrawl/aljadeed-fuel.json --json 2>&1 && cat .firecrawl/aljadeed-fuel.json | python -c \"import json,sys; d=json.load(sys.stdin); print(d.get('data',{}).get('markdown','')[:2000])\""
+  ],
+  "uses": 1,
+  "created": 1781302077,
+  "last_used": 1781302077
+ },
+ {
+  "id": "t1781302284507",
+  "intent": "hey Max can you generate the PowerPoint talking about Lebanon and all the summer activites we can do in summary 2026 create good images good quality images but ",
+  "keywords": [
+   "2026",
+   "about",
+   "activites",
+   "all",
+   "but",
+   "create",
+   "email",
+   "generate",
+   "good",
+   "images",
+   "lebanon",
+   "powerpoint",
+   "quality",
+   "send",
+   "summary",
+   "summer",
+   "talking",
+   "telegram",
+   "them"
+  ],
+  "commands": [
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py generate_image \"{\\\"prompt\\\":\\\"Stunning aerial view of Lebanon coastline with crystal blue Mediterranean Sea, golden sandy beaches, luxury beach clubs, summer 2026, photorealistic, vibrant colors, 4K quality\\\"}\" &\npython tools.py generate_image \"{\\\"prompt\\\":\\\"Cedars of Lebanon forest with hiking trails, dramatic mountain landscape, lush green valleys, warm golden sunlight, photorealistic travel photography, 4K quality\\\"}\" &\npython tools.py generate_image \"{\\\"prompt\\\":\\\"Byblos ancient ruins and harbor Lebanon, historic Phoenician port, colorful fishing boats, golden hour light, tourism travel photography, 4K photorealistic\\\"}\" &\nwait\necho \"BATCH1_DONE\"",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py generate_image \"{\\\"prompt\\\":\\\"Baalbek Roman temple ruins Lebanon at sunset, massive stone columns, dramatic sky, ancient architecture, travel photography, photorealistic 4K\\\"}\" &\npython tools.py generate_image \"{\\\"prompt\\\":\\\"Beirut vibrant nightlife rooftop bar, city skyline at night, Lebanese people enjoying summer, colorful lights, luxury lifestyle, photorealistic 4K\\\"}\" &\npython tools.py generate_image \"{\\\"prompt\\\":\\\"Lebanese traditional food spread mezze table, hummus tabbouleh kibbeh fattoush, colorful fresh ingredients, outdoor summer dining, photorealistic food photography 4K\\\"}\" &\nwait\necho \"BATCH2_DONE\"",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py generate_image \"{\\\"prompt\\\":\\\"Water sports in Lebanon sea, jet skiing parasailing diving, turquoise Mediterranean water, summer fun, action photography 4K photorealistic\\\"}\" &\npython tools.py generate_image \"{\\\"prompt\\\":\\\"Jounieh bay Lebanon summer panoramic view, cable car over sea, boats yachts, coastal mountains, perfect sunny day, travel photography 4K\\\"}\" &\nwait\necho \"BATCH3_DONE\"",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py browse \"{\\\"url\\\":\\\"https://max.vdo-x.art/img/img_1781302134648.jpg\\\",\\\"action\\\":\\\"download\\\",\\\"output\\\":\\\"C:/tmp/leb_beach.jpg\\\"}\" &\npython tools.py browse \"{\\\"url\\\":\\\"https://max.vdo-x.art/img/img_1781302134886.jpg\\\",\\\"action\\\":\\\"download\\\",\\\"output\\\":\\\"C:/tmp/leb_cedars.jpg\\\"}\" &\npython tools.py browse \"{\\\"url\\\":\\\"https://max.vdo-x.art/img/img_1781302134895.jpg\\\",\\\"action\\\":\\\"download\\\",\\\"output\\\":\\\"C:/tmp/leb_byblos.jpg\\\"}\" &\npython tools.py browse \"{\\\"url\\\":\\\"https://max.vdo-x.art/img/img_1781302143358.jpg\\\",\\\"action\\\":\\\"download\\\",\\\"output\\\":\\\"C:/tmp/leb_baalbek.jpg\\\"}\" &\npython tools.py browse \"{\\\"url\\\":\\\"https://max.vdo-x.art/img/img_1781302143448.jpg\\\",\\\"action\\\":\\\"download\\\",\\\"output\\\":\\\"C:/tmp/leb_food.jpg\\\"}\" &\npython tools.py browse \"{\\\"url\\\":\\\"https://max.vdo-x.art/img/img_1781302151413.jpg\\\",\\\"action\\\":\\\"download\\\",\\\"output\\\":\\\"C:/tmp/leb_watersports.jpg\\\"}\" &\npython tools.py browse \"{\\\"url\\\":\\\"https://max.vdo-x.art/img/img_1781302151643.jpg\\\",\\\"action\\\":\\\"download\\\",\\\"output\\\":\\\"C:/tmp/leb_jounieh.jpg\\\"}\" &\nwait\necho \"DOWNLOADS_DONE\"",
+   "ls C:/tmp/leb_*.jpg 2>/dev/null | head -20 || dir C:\\tmp\\leb_*.jpg 2>nul",
+   "python -c \"\nimport urllib.request, os\nimgs = {\n    'leb_beach': 'https://max.vdo-x.art/img/img_1781302134648.jpg',\n    'leb_cedars': 'https://max.vdo-x.art/img/img_1781302134886.jpg',\n    'leb_byblos': 'https://max.vdo-x.art/img/img_1781302134895.jpg',\n    'leb_baalbek': 'https://max.vdo-x.art/img/img_1781302143358.jpg',\n    'leb_food': 'https://max.vdo-x.art/img/img_1781302143448.jpg',\n    'leb_watersports': 'https://max.vdo-x.art/img/img_1781302151413.jpg',\n    'leb_jounieh': 'https://max.vdo-x.art/img/img_1781302151643.jpg',\n}\nos.makedirs('C:/tmp', exist_ok=True)\nfor name, url in imgs.items():\n    path = f'C:/tmp/{name}.jpg'\n    urllib.request.urlretrieve(url, path)\n    size = os.path.getsize(path)\n    print(f'{name}: {size} bytes')\nprint('ALL DOWNLOADED')\n\" 2>&1",
+   "python -c \"\nimport requests, os\nheaders = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36', 'Referer': 'https://max.vdo-x.art/'}\nimgs = {\n    'leb_beach': 'https://max.vdo-x.art/img/img_1781302134648.jpg',\n    'leb_cedars': 'https://max.vdo-x.art/img/img_1781302134886.jpg',\n    'leb_byblos': 'https://max.vdo-x.art/img/img_1781302134895.jpg',\n    'leb_baalbek': 'https://max.vdo-x.art/img/img_1781302143358.jpg',\n    'leb_food': 'https://max.vdo-x.art/img/img_1781302143448.jpg',\n    'leb_watersports': 'https://max.vdo-x.art/img/img_1781302151413.jpg',\n    'leb_jounieh': 'https://max.vdo-x.art/img/img_1781302151643.jpg',\n}\nos.makedirs('C:/tmp', exist_ok=True)\nfor name, url in imgs.items():\n    path = f'C:/tmp/{name}.jpg'\n    r = requests.get(url, headers=headers, timeout=30)\n    print(f'{name}: status={r.status_code} size={len(r.content)}')\n    if r.status_code == 200:\n        open(path, 'wb').write(r.content)\nprint('DONE')\n\" 2>&1",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python C:/tmp/build_lebanon_pptx.py 2>&1",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py send_email \"{\\\"to\\\":\\\"gabriel.salem2008@outlook.com\\\",\\\"subject\\\":\\\"Lebanon Summer 2026 — Activities & Travel Guide\\\",\\\"body\\\":\\\"<h2>🇱🇧 Lebanon Summer 2026</h2><p>Hey Gabriel,</p><p>Here is your Lebanon Summer 2026 presentation! The PowerPoint is attached and covers everything for an amazing Lebanese summer:</p><ul><li>🏖 <b>Beaches &amp; Coastline</b> — Tyre, Jounieh, Jiyeh, Batroun</li><li>🌲 <b>Mountains &amp; Nature</b> — Cedars, Qadisha Valley, Faraya</li><li>🏛 <b>Historical Sites</b> — Byblos, Baalbek, Crusader Castles</li><li>🍽 <b>Food &amp; Cuisine</b> — Mezze, fresh fish, Lebanese wines</li><li>🌊 <b>Water Sports</b> — Jet ski, diving, parasailing, sailing</li><li>🎉 <b>Nightlife &amp; Festivals</b> — Byblos &amp; Baalbek festivals</li></ul><p>Have an incredible summer in Lebanon! 🌞</p><p>— MAX</p>\\\",\\\"attachment\\\":\\\"C:/tmp/Lebanon_Summer_2026.pptx\\\"}\" &\npython tools.py send_telegram \"{\\\"message\\\":\\\"🇱🇧 *Lebanon Summer 2026 PowerPoint is ready!*\\n\\nHere's what's inside your presentation:\\n\\n🏖 Beaches & Coastline — Tyre, Jounieh, Batroun\\n🌲 Mountains & Nature — Cedars, Qadisha Valley\\n🏛 Historical Sites — Byblos, Baalbek ruins\\n🍽 Food & Cuisine — Mezze, fresh fish, wine\\n🌊 Water Sports — Jet ski, diving, parasailing\\n🎉 Nightlife — Byblos & Baalbek festivals\\n\\n📎 PowerPoint sent to your email: gabriel.salem2008@outlook.com\\n\\nEnjoy your summer in Lebanon! 🌞\\\"}\" &\nwait\necho \"SENT\"",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py send_email \"{\\\"to\\\":\\\"gsal4066@gmail.com\\\",\\\"subject\\\":\\\"Lebanon Summer 2026 — Activities & Travel Guide\\\",\\\"body\\\":\\\"<h2>🇱🇧 Lebanon Summer 2026</h2><p>Hey Gabriel,</p><p>Here is your Lebanon Summer 2026 presentation! The PowerPoint is attached and covers everything for an amazing Lebanese summer:</p><ul><li>🏖 <b>Beaches &amp; Coastline</b> — Tyre, Jounieh, Jiyeh, Batroun</li><li>🌲 <b>Mountains &amp; Nature</b> — Cedars, Qadisha Valley, Faraya</li><li>🏛 <b>Historical Sites</b> — Byblos, Baalbek, Crusader Castles</li><li>🍽 <b>Food &amp; Cuisine</b> — Mezze, fresh fish, Lebanese wines</li><li>🌊 <b>Water Sports</b> — Jet ski, diving, parasailing, sailing</li><li>🎉 <b>Nightlife &amp; Festivals</b> — Byblos &amp; Baalbek festivals</li></ul><p>Have an incredible summer in Lebanon! 🌞</p><p>— MAX</p>\\\",\\\"attachment\\\":\\\"C:/tmp/Lebanon_Summer_2026.pptx\\\"}\" 2>&1"
+  ],
+  "uses": 1,
+  "created": 1781302284,
+  "last_used": 1781302284
+ },
+ {
+  "id": "t1781302485939",
+  "intent": "hey Max can you calculate how much time it takes for me to go from where I am to batarun bedroom in the North b a t at ou and how much time it takes from my loc",
+  "keywords": [
+   "am",
+   "batarun",
+   "bedroom",
+   "calculate",
+   "from",
+   "go",
+   "how",
+   "location",
+   "much",
+   "north",
+   "ou",
+   "takes",
+   "time",
+   "where"
+  ],
+  "commands": [
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py browse \"{\\\"url\\\":\\\"https://ipinfo.io/json\\\",\\\"action\\\":\\\"text\\\"}\" 2>&1",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py search \"{\\\"query\\\":\\\"driving time from Baabda Mount Lebanon to Batroun North Lebanon distance route\\\",\\\"num_results\\\":5}\" 2>&1",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py browse \"{\\\"url\\\":\\\"https://www.rome2rio.com/s/Baabda/Batroun\\\",\\\"action\\\":\\\"text\\\"}\" 2>&1 &\npython tools.py cdp_action \"{\\\"action\\\":\\\"navigate\\\",\\\"url\\\":\\\"https://www.google.com/maps/dir/Baabda,+Lebanon/Batroun,+Lebanon\\\"}\" 2>&1 &\nwait",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py browse \"{\\\"url\\\":\\\"https://www.viamichelin.com/web/Routes?departure=Baabda%2C+Lebanon&arrival=Batroun%2C+Lebanon\\\",\\\"action\\\":\\\"text\\\"}\" 2>&1",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python -c \"\nimport requests\n# Use OpenRouteService or OSRM (free, no auth needed)\n# OSRM public API: from Baabda (35.5442, 33.8339) to Batroun (35.6571, 34.2517)\nurl = 'http://router.project-osrm.org/route/v1/driving/35.5442,33.8339;35.6571,34.2517?overview=false&annotations=false'\nr = requests.get(url, timeout=15)\ndata = r.json()\nprint(data)\nif 'routes' in data:\n    route = data['routes'][0]\n    dist_km = route['distance'] / 1000\n    duration_min = route['duration'] / 60\n    print(f'Distance: {dist_km:.1f} km')\n    print(f'Duration: {duration_min:.0f} minutes ({duration_min/60:.1f} hours)')\n\" 2>&1",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python -c \"\nimport sys, io\nsys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')\nimport requests\n# Baabda coords: 33.8339, 35.5442  (lat, lon)\n# Batroun coords: 34.2527, 35.6575\n# OSRM: lon,lat order\nurl = 'http://router.project-osrm.org/route/v1/driving/35.5442,33.8339;35.6575,34.2527?overview=false'\nr = requests.get(url, timeout=15)\ndata = r.json()\nif 'routes' in data:\n    route = data['routes'][0]\n    dist_km = route['distance'] / 1000\n    duration_min = route['duration'] / 60\n    print('Distance: %.1f km' % dist_km)\n    print('Duration: %.0f minutes (%.1f hours)' % (duration_min, duration_min/60))\nelse:\n    print(data)\n\" 2>&1",
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py send_telegram \"{\\\"message\\\":\\\"📍 *Your Location → Batroun*\\n\\nFrom: Baabda, Mount Lebanon\\nTo: Batroun, North Lebanon\\n\\n🛣 Distance: ~58 km\\n⏱ Drive time: ~45-55 min (no traffic)\\n🚦 With Beirut traffic: ~1h 15min - 1h 30min\\n\\nRoute: Baabda → Beirut Ring Road → North Highway (Jounieh, Byblos) → Batroun exit\\\"}\" 2>&1"
+  ],
+  "uses": 1,
+  "created": 1781302485,
+  "last_used": 1781302485
+ },
+ {
+  "id": "t1781302539794",
+  "intent": "your travel info your location Bob death Mount Lebanon destination but true and northwest Lebanon distance maximally 58 kilometers hey Max can you send send me ",
+  "keywords": [
+   "58",
+   "bedroom",
+   "bob",
+   "but",
+   "death",
+   "destination",
+   "distance",
+   "email",
+   "follow",
+   "from",
+   "goes",
+   "google",
+   "info",
+   "kilometers",
+   "lebanon",
+   "location",
+   "maps",
+   "maximally",
+   "mount",
+   "northwest",
+   "path",
+   "send",
+   "trajectory",
+   "travel",
+   "true",
+   "two",
+   "url",
+   "via",
+   "your"
+  ],
+  "commands": [
+   "cd \"C:\\Users\\Admin\\OneDrive\\Documents\\max\" && python tools.py send_email \"{\\\"to\\\":\\\"gsal4066@gmail.com\\\",\\\"subject\\\":\\\"Google Maps: Baabda to Batroun\\\",\\\"body\\\":\\\"<h2>Directions: Baabda to Batroun</h2><p>Tap the link below to open Google Maps with your route ready to go:</p><p style='font-size:18px'><a href='https://www.google.com/maps/dir/Baabda,+Lebanon/Batroun,+North+Lebanon'>Google Maps — Baabda to Batroun</a></p><p><b>https://www.google.com/maps/dir/Baabda,+Lebanon/Batroun,+North+Lebanon</b></p><p>Distance: ~58 km | Drive time: ~45-50 min (no traffic) | ~1h 15-30min with traffic</p><p>— MAX</p>\\\"}\" 2>&1"
+  ],
+  "uses": 1,
+  "created": 1781302539,
+  "last_used": 1781302539
  }
 ]
