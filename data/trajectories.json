@@ -244,5 +244,57 @@
   "uses": 1,
   "created": 1781302539,
   "last_used": 1781302539
+ },
+ {
+  "id": "t1781302881665",
+  "intent": "hey man hey Max can you send me the route the Google Maps route from my location to Jay tagrotto like if you can send me the Google Maps location so I can follo",
+  "keywords": [
+   "email",
+   "follow",
+   "from",
+   "google",
+   "if",
+   "jay",
+   "like",
+   "location",
+   "man",
+   "maps",
+   "route",
+   "send",
+   "tagrotto",
+   "via"
+  ],
+  "commands": [
+   "python \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" send_email \"{\\\"to\\\":\\\"gabriel.salem2008@outlook.com\\\",\\\"subject\\\":\\\"Google Maps Route to Jay Tagrotto\\\",\\\"body\\\":\\\"<p>Hey Gabriel,</p><p>Here's your Google Maps route from your current location to <strong>Jay Tagrotto</strong>:</p><p><a href='https://www.google.com/maps/dir/?api=1&destination=Jay+Tagrotto+Lebanon' style='font-size:18px;font-weight:bold;color:#1a73e8;'>Tap here for turn-by-turn directions</a></p><p>Google Maps will use your live location as the starting point automatically. Just tap the link on your phone and hit Start.</p><p>Safe drive! — MAX</p>\\\"}\"",
+   "python \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" send_email \"{\\\"to\\\":\\\"gsal4066@gmail.com\\\",\\\"subject\\\":\\\"Google Maps Route to Jay Tagrotto\\\",\\\"body\\\":\\\"<p>Hey Gabriel,</p><p>Here's your Google Maps route from your current location to <strong>Jay Tagrotto</strong>:</p><p><a href='https://www.google.com/maps/dir/?api=1&destination=Jay+Tagrotto+Lebanon' style='font-size:18px;font-weight:bold;color:#1a73e8;'>Tap here for turn-by-turn directions</a></p><p>Google Maps will use your live location as the starting point automatically. Just tap the link on your phone and hit Start.</p><p>Safe drive! — MAX</p>\\\"}\""
+  ],
+  "uses": 1,
+  "created": 1781302881,
+  "last_used": 1781302881
+ },
+ {
+  "id": "t1781303270595",
+  "intent": "hey Max can you tell me all the job applications in Lebanon that were open for a software engineering",
+  "keywords": [
+   "all",
+   "applications",
+   "engineering",
+   "job",
+   "lebanon",
+   "open",
+   "software",
+   "tell",
+   "were"
+  ],
+  "commands": [
+   "python \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" search \"{\\\"query\\\":\\\"software engineering jobs Lebanon 2025 open positions hiring\\\",\\\"num_results\\\":8}\" &\npython \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" search \"{\\\"query\\\":\\\"software developer jobs Lebanon LinkedIn Glassdoor 2025\\\",\\\"num_results\\\":8}\" &\nwait",
+   "python \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" browse \"{\\\"url\\\":\\\"https://www.bayt.com/en/lebanon/jobs/software-developer-jobs/\\\",\\\"action\\\":\\\"text\\\"}\"",
+   "python \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" scrape \"{\\\"query\\\":\\\"software engineer jobs open Lebanon 2025 Beirut apply now\\\"}\"",
+   "python \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" browse \"{\\\"url\\\":\\\"https://www.linkedin.com/jobs/search/?keywords=software+engineer&location=Lebanon\\\",\\\"action\\\":\\\"text\\\"}\" &\npython \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" browse \"{\\\"url\\\":\\\"https://jobs.workable.com/search?query=software+engineer&location=Lebanon\\\",\\\"action\\\":\\\"text\\\"}\" &\nwait",
+   "python \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" browse \"{\\\"url\\\":\\\"https://www.linkedin.com/jobs/search/?keywords=software+engineer&location=Beirut%2C+Lebanon&f_TPR=r2592000\\\",\\\"action\\\":\\\"text\\\"}\" &\npython \"C:\\Users\\Admin\\OneDrive\\Documents\\max\\tools.py\" search \"{\\\"query\\\":\\\"site:linkedin.com/jobs software engineer Beirut Lebanon 2026 hiring\\\",\\\"num_results\\\":8}\" &\nwait"
+  ],
+  "uses": 1,
+  "created": 1781303270,
+  "last_used": 1781303270
  }
 ]

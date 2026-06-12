@@ -10,7 +10,7 @@ import subprocess as _sp
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query, Body
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, StreamingResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -269,8 +269,26 @@ async def login_page():
 
 
 @app.get("/")
-async def root():
+async def root(request: Request = None):
+    # max-lebanon.vdo-x.art → serve landing page; max.vdo-x.art → serve app
+    if request:
+        host = request.headers.get("host", "")
+        if "max-lebanon" in host:
+            lp = MAX_DIR / "landing" / "index.html"
+            if lp.exists():
+                return HTMLResponse(lp.read_text(encoding="utf-8"))
     return HTMLResponse((STATIC / "index.html").read_text(encoding="utf-8"))
+
+
+@app.get("/img/{filename}")
+async def landing_img(filename: str):
+    """Serve landing page images (for max-lebanon subdomain)."""
+    from fastapi.responses import FileResponse
+    img = MAX_DIR / "landing" / "img" / filename
+    if img.exists():
+        return FileResponse(str(img))
+    from fastapi import HTTPException
+    raise HTTPException(404)
 
 
 def _detect_lang_voice(text: str) -> str:
