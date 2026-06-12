@@ -1,0 +1,21 @@
+[
+ {
+  "id": "t1781300314530",
+  "intent": "hey Max can you create the PowerPoint for me and send it to my email Let It Be a PowerPoint for Lebanon",
+  "keywords": [
+   "create",
+   "email",
+   "lebanon",
+   "powerpoint",
+   "send"
+  ],
+  "commands": [
+   "python tools.py generate_powerpoint '{\n  \"title\": \"Let It Be - Lebanon\",\n  \"slides\": [\n    {\n      \"title\": \"Let It Be - Lebanon\",\n      \"bullets\": [\"Discover the Pearl of the Middle East\", \"Culture, History & Beauty\"]\n    },\n    {\n      \"title\": \"Welcome to Lebanon\",\n      \"bullets\": [\"Ancient civilization spanning millennia\", \"Crossroads of Mediterranean and Middle Eastern culture\", \"UNESCO World Heritage Sites\", \"Natural beauty from mountains to sea\"]\n    },\n    {\n      \"title\": \"Rich History\",\n      \"bullets\": [\"Phoenician trade empire (1500-300 BC)\", \"Roman, Byzantine, Arab, and Ottoman influence\", \"Cedar of Lebanon - symbol of sovereignty\", \"Contemporary history of resilience and rebuilding\"]\n    },\n    {\n      \"title\": \"Cultural Treasures\",\n      \"bullets\": [\"Baalbek - largest Roman temples outside Rome\", \"Tyre - ancient Phoenician city\", \"Byblos - one of worlds oldest cities\", \"Qadisha Valley - spiritual sanctuary\"]\n    },\n    {\n      \"title\": \"Natural Wonders\",\n      \"bullets\": [\"Snow-capped Mount Lebanon peaks\", \"Mediterranean coastline & pristine beaches\", \"Cedars of God UNESCO site\", \"Ancient caves and grottos\"]\n    },\n    {\n      \"title\": \"Lebanese Cuisine\",\n      \"bullets\": [\"Hummus, tabbouleh, fattoush\", \"Cedar cheese & olive oil excellence\", \"Grilled meats & fresh seafood\", \"World-renowned hospitality & dining\"]\n    },\n    {\n      \"title\": \"Modern Lebanon\",\n      \"bullets\": [\"Vibrant arts and music scene\", \"Beirut - sophisticated metropolitan hub\", \"Spirit of resilience and pride\", \"Gateway to discovery and adventure\"]\n    },\n    {\n      \"title\": \"Let It Be\",\n      \"bullets\": [\"Embrace the beauty in every moment\", \"Experience Lebanon with an open heart\", \"A nation to explore and celebrate\"]\n    }\n  ],\n  \"output\": \"/tmp/Lebanon_PowerPoint.pptx\"\n}'",
+   "python tools.py send_email '{\n  \"to\": \"gabriel.salem2008@outlook.com\",\n  \"subject\": \"Let It Be - Lebanon PowerPoint\",\n  \"body\": \"<p>Hey!</p><p>Your Lebanon PowerPoint is ready to go. Enjoy exploring the Pearl of the Middle East!</p>\",\n  \"attachment\": \"/tmp/Lebanon_PowerPoint.pptx\"\n}'",
+   "python tools.py send_email '{\n  \"to\": \"gsal4066@gmail.com\",\n  \"subject\": \"Let It Be - Lebanon PowerPoint\",\n  \"body\": \"<p>Hey!</p><p>Your Lebanon PowerPoint is ready. 8 beautiful slides exploring Lebanon - its history, culture, natural wonders, and cuisine. Enjoy!</p>\",\n  \"attachment\": \"/tmp/Lebanon_PowerPoint.pptx\"\n}'"
+  ],
+  "uses": 1,
+  "created": 1781300314,
+  "last_used": 1781300314
+ }
+]

@@ -697,6 +697,7 @@ function send(text){
   // Only start a new typing indicator if none is active
   if(!typingEl) startTyping();
   setBusy(true);
+  if(typeof _switchLang === 'function') _switchLang(msg);
   ws.send(JSON.stringify({type:'message', text:msg}));
 }
 
@@ -900,7 +901,19 @@ function initSpeech(){
   recog=new SR();
   recog.continuous=true;
   recog.interimResults=true;
-  recog.lang='en-US';
+  recog.lang='en-US';   // default; switched dynamically below
+
+  // Detect Arabic/French from typed or spoken text and switch STT language
+  function _switchLang(text){
+    const hasArabic = /[؀-ۿ]/.test(text);
+    const hasFrench = /\b(je|tu|il|elle|nous|vous|bonjour|merci|oui|non|prix|trafic|est|avec|pour|dans|sur|les|une?|des)\b/i.test(text);
+    const newLang = hasArabic ? 'ar-LB' : hasFrench ? 'fr-FR' : 'en-US';
+    if(recog.lang !== newLang){
+      recog.lang = newLang;
+      // restart recognition to apply new language
+      try{ recog.stop(); }catch{}
+    }
+  }
 
   let finalT='', silTimer=null;
 

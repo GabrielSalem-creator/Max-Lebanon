@@ -273,12 +273,31 @@ async def root():
     return HTMLResponse((STATIC / "index.html").read_text(encoding="utf-8"))
 
 
+def _detect_lang_voice(text: str) -> str:
+    """Pick the right edge-tts voice based on script/keywords in the text."""
+    t = text.strip()
+    # Arabic script detection
+    if any('؀' <= c <= 'ۿ' for c in t):
+        return "ar-LB-LaylaNeural"   # Lebanese Arabic female
+    # French keyword detection
+    fr_markers = ("je ", "tu ", "il ", "elle ", "nous ", "vous ", "ils ",
+                  "le ", "la ", "les ", "un ", "une ", "des ",
+                  "est ", "sont ", "avec ", "pour ", "dans ", "sur ",
+                  "bonjour", "merci", "oui ", "non ", "voici", "voilà",
+                  "aujourd", "demain", "prix ", "trafic", "nouvelle")
+    tl = t.lower()
+    if any(m in tl for m in fr_markers):
+        return "fr-FR-DeniseNeural"  # French female
+    return "en-US-JennyNeural"       # default English
+
+
 @app.get("/tts")
 async def tts(text: str = Query(...)):
     import edge_tts
+    voice = _detect_lang_voice(text)
 
     async def gen():
-        comm = edge_tts.Communicate(text[:500], voice="en-US-JennyNeural")
+        comm = edge_tts.Communicate(text[:500], voice=voice)
         async for chunk in comm.stream():
             if chunk["type"] == "audio":
                 yield chunk["data"]
