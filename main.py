@@ -1359,23 +1359,24 @@ async def run_msg(text: str, ws: WebSocket, room: str):
             return
         # No tasks → fall through (it's a real question)
 
-    # ── INSTANT FACT — deterministic time/date/weather, zero LLM, always correct ──
-    fact = _try_instant_fact(text)
-    if fact:
-        await safe_send(ws, {"type": "event", "data": {
-            "type": "assistant",
-            "message": {"content": [{"type": "text", "text": fact}]},
-        }})
-        await _send_tts(ws, room, fact)
-        await safe_send(ws, {"type": "done", "session_id": None})
-        return
+    # A real task ALWAYS wins over a cached keyword. If the message asks MAX to DO
+    # something (create/make/generate/send/build/...), skip every cached/chatz shortcut
+    # and go straight to Claude — even if it happens to mention "activities", "news", etc.
+    agentic = _is_agentic(text)
 
-    # ── UNDERSTAND FIRST ──
-    # Real task (deterministic verb gate) → straight to Claude, the brain.
-    # Otherwise chatz reads the actual intent: it answers small talk and questions
-    # itself (surfacing predefined facts ONLY when truly asked), and can still punt
-    # to Claude via NEEDS_CLAUDE. No more blind keyword matching on the answer side.
-    if not _is_agentic(text):
+    if not agentic:
+        # ── INSTANT FACT — deterministic time/date/weather/fuel, zero LLM, always correct ──
+        fact = _try_instant_fact(text)
+        if fact:
+            await safe_send(ws, {"type": "event", "data": {
+                "type": "assistant",
+                "message": {"content": [{"type": "text", "text": fact}]},
+            }})
+            await _send_tts(ws, room, fact)
+            await safe_send(ws, {"type": "done", "session_id": None})
+            return
+
+        # ── UNDERSTAND FIRST ── chatz reads the actual intent and answers small talk.
         verdict = await _chatz_front_door(text, ws, room)
         if verdict == "answered":
             return

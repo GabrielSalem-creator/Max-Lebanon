@@ -561,6 +561,110 @@ async def send_telegram_photo(p: dict) -> str:
     return f"✗ Telegram sendPhoto failed ({r.status_code}): {r.text[:200]}"
 
 
+async def send_telegram_document(p: dict) -> str:
+    """
+    Send a document/file (PPTX, PDF, DOCX, etc.) to Telegram.
+    p: {path: "C:/tmp/file.pptx", caption: "optional text"}  (or 'file'/'document' key)
+    Use this for presentations and files — NOT send_telegram_photo (which is images only).
+    """
+    import httpx
+    chat_file = DATA_DIR / "tg_chat_id.txt"
+    chat_id = ""
+    if chat_file.exists():
+        chat_id = chat_file.read_text().strip()
+    if not chat_id:
+        async with httpx.AsyncClient(timeout=10) as c:
+            r = await c.get(f"https://api.telegram.org/bot{TG_TOKEN}/getUpdates")
+            updates = r.json().get("result", [])
+            if updates:
+                chat_id = str(updates[-1]["message"]["chat"]["id"])
+                chat_file.write_text(chat_id)
+    if not chat_id:
+        return "✗ No Telegram chat_id — message the bot once first"
+
+    path = p.get("path", p.get("file", p.get("document", "")))
+    caption = p.get("caption", p.get("text", ""))
+    fp = Path(path)
+    if not fp.exists():
+        return f"✗ File not found: {path}"
+    async with httpx.AsyncClient(timeout=60) as c:
+        with open(fp, "rb") as f:
+            r = await c.post(
+                f"https://api.telegram.org/bot{TG_TOKEN}/sendDocument",
+                data={"chat_id": chat_id, "caption": caption},
+                files={"document": (fp.name, f)},
+            )
+    if r.status_code == 200:
+        return f"✓ Document '{fp.name}' sent to Telegram"
+    return f"✗ Telegram sendDocument failed ({r.status_code}): {r.text[:200]}"
+
+
+async def send_whatsapp(p: dict) -> str:
+    """
+    Send a WhatsApp message via the logged-in WhatsApp Web (Chrome CDP on port 9222).
+    p: {phone: "9613xxxxxx" (intl, no +), message: "text", file_url: "optional public link"}
+    Run start_chrome_cdp.bat first so WhatsApp Web is logged in.
+    Note: files are delivered as a link in the message (WhatsApp Web blocks scripted file attach).
+    """
+    import httpx, urllib.parse
+    phone = str(p.get("phone", p.get("contact", p.get("number", "")))).lstrip("+").replace(" ", "")
+    message = p.get("message", p.get("text", ""))
+    if p.get("file_url"):
+        message = (message + "\n" + p["file_url"]).strip()
+    if not phone:
+        return "✗ send_whatsapp needs a 'phone' (international format, e.g. 9613123456)"
+    if not message:
+        return "✗ send_whatsapp needs a 'message'"
+
+    CDP = "http://localhost:9222"
+    text_enc = urllib.parse.quote(message)
+    url = f"https://web.whatsapp.com/send?phone={phone}&text={text_enc}"
+    try:
+        async with httpx.AsyncClient(timeout=10) as c:
+            tabs = (await c.get(f"{CDP}/json")).json()
+    except Exception as e:
+        return f"✗ Chrome not reachable at {CDP}. Run start_chrome_cdp.bat first. Error: {e}"
+    if not tabs:
+        return "✗ No Chrome tabs found."
+
+    import websockets
+    # Prefer an existing WhatsApp tab, else use the first tab
+    tab = next((t for t in tabs if "web.whatsapp.com" in t.get("url", "")), tabs[0])
+    ws_url = tab.get("webSocketDebuggerUrl", "")
+    if not ws_url:
+        return "✗ No WebSocket debugger URL"
+    mid = [1]
+    async def send(ws, method, params=None):
+        m = mid[0]; mid[0] += 1
+        await ws.send(json.dumps({"id": m, "method": method, "params": params or {}}))
+        while True:
+            resp = json.loads(await asyncio.wait_for(ws.recv(), timeout=20))
+            if resp.get("id") == m:
+                return resp.get("result", {})
+    try:
+        async with websockets.connect(ws_url, max_size=10*1024*1024) as ws:
+            await send(ws, "Page.navigate", {"url": url})
+            # WhatsApp Web needs time to load the chat + prefilled text
+            await asyncio.sleep(7)
+            # Click the send button (data-icon="send")
+            click_expr = (
+                "(()=>{const b=document.querySelector('span[data-icon=\"send\"]')||"
+                "document.querySelector('button[aria-label=\"Send\"]');"
+                "if(b){b.click();return 'clicked';}return 'no-send-button';})()"
+            )
+            for _ in range(3):
+                res = await send(ws, "Runtime.evaluate", {"expression": click_expr, "returnByValue": True})
+                val = res.get("result", {}).get("value", "")
+                if val == "clicked":
+                    await asyncio.sleep(1)
+                    return f"✓ WhatsApp message sent to {phone}"
+                await asyncio.sleep(2)
+            return ("⚠ Opened WhatsApp chat with the message prefilled for "
+                    f"{phone}, but couldn't auto-click send — the chat is ready to send manually.")
+    except Exception as e:
+        return f"✗ send_whatsapp error: {e}"
+
+
 async def send_telegram(p: dict) -> str:
     import httpx
     chat_id = p.get("chat_id", "")
@@ -2531,6 +2635,8 @@ TOOLS = {
     "read_emails":        read_emails,
     "send_telegram":      send_telegram,
     "send_telegram_photo": send_telegram_photo,
+    "send_telegram_document": send_telegram_document,
+    "send_whatsapp":      send_whatsapp,
     # Media
     "generate_image":     generate_image,
     "generate_video":     generate_video,

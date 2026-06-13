@@ -106,12 +106,15 @@ python tools.py vondy_video '{"prompt":"...","duration":"5","ratio":"16:9"}'
 python tools.py generate_video_free '{"prompt":"..."}'
 python tools.py runway_video '{"prompt":"...","duration":5}'
 
-# Email / Telegram
-python tools.py send_email '{"to":"addr","subject":"s","body":"<p>html</p>"}'
+# Email / Telegram / WhatsApp
+python tools.py send_email '{"to":"addr","subject":"s","body":"<p>html</p>","attachment":"/path/file.pptx"}'  # attachment optional
 python tools.py read_emails '{"count":5}'
 python tools.py send_telegram '{"message":"text"}'
+python tools.py send_telegram_photo '{"url":"...","caption":"..."}'          # IMAGES only
+python tools.py send_telegram_document '{"path":"/path/file.pptx","caption":"..."}'  # FILES/PPTX/PDF
+python tools.py send_whatsapp '{"phone":"9613xxxxxx","message":"text","file_url":"optional link"}'  # needs CDP Chrome
 
-# PowerPoint
+# PowerPoint  →  to email use send_email attachment; to Telegram use send_telegram_document (NOT _photo)
 python tools.py generate_powerpoint '{"title":"T","slides":[{"title":"S","bullets":["A","B"]}],"output":"/tmp/out.pptx"}'
 
 # Browser CDP (logged-in Chrome)
