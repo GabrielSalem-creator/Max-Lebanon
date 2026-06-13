@@ -695,6 +695,32 @@ async def send_telegram(p: dict) -> str:
 
 PUBLIC_BASE = "https://max.vdo-x.art"
 
+
+async def host_file(p: dict) -> str:
+    """Copy a local file into the public web folder and return shareable links.
+    For PPTX/Word/Excel it ALSO returns an Office Online viewer link that opens the
+    presentation directly in any browser (phone or PC) — no app or download needed.
+    p: {path: "C:/tmp/deck.pptx"}
+    Returns the viewer link first (that's the one to send people).
+    """
+    import shutil, urllib.parse, time as _t
+    src = Path(p.get("path", p.get("file", p.get("output", ""))))
+    if not src.exists():
+        return f"✗ File not found: {src}"
+    files_dir = Path(__file__).parent / "static" / "files"
+    files_dir.mkdir(parents=True, exist_ok=True)
+    safe = re.sub(r"[^A-Za-z0-9_.-]", "_", src.name)
+    dest_name = f"{int(_t.time())}_{safe}"
+    shutil.copy2(src, files_dir / dest_name)
+    direct = f"{PUBLIC_BASE}/files/{dest_name}"
+    ext = src.suffix.lower()
+    if ext in (".pptx", ".ppt", ".docx", ".doc", ".xlsx", ".xls"):
+        viewer = "https://view.officeapps.live.com/op/view.aspx?src=" + urllib.parse.quote(direct, safe="")
+        return json.dumps({"viewer_url": viewer, "direct_url": direct,
+                           "message": f"✓ Hosted. Click to view in browser: {viewer}"})
+    return json.dumps({"direct_url": direct, "message": f"✓ Hosted: {direct}"})
+
+
 # ── Image Generation ───────────────────────────────────────────────────────
 async def generate_image(p: dict) -> str:
     import httpx, base64, time
@@ -2637,6 +2663,7 @@ TOOLS = {
     "send_telegram_photo": send_telegram_photo,
     "send_telegram_document": send_telegram_document,
     "send_whatsapp":      send_whatsapp,
+    "host_file":          host_file,
     # Media
     "generate_image":     generate_image,
     "generate_video":     generate_video,

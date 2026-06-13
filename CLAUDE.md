@@ -114,8 +114,14 @@ python tools.py send_telegram_photo '{"url":"...","caption":"..."}'          # I
 python tools.py send_telegram_document '{"path":"/path/file.pptx","caption":"..."}'  # FILES/PPTX/PDF
 python tools.py send_whatsapp '{"phone":"9613xxxxxx","message":"text","file_url":"optional link"}'  # needs CDP Chrome
 
-# PowerPoint  →  to email use send_email attachment; to Telegram use send_telegram_document (NOT _photo)
+# PowerPoint  →  generate, then HOST it for a clickable view-in-browser link, then deliver
 python tools.py generate_powerpoint '{"title":"T","slides":[{"title":"S","bullets":["A","B"]}],"output":"/tmp/out.pptx"}'
+python tools.py host_file '{"path":"/tmp/out.pptx"}'   # → {viewer_url, direct_url}. viewer_url opens slides in any browser, no app needed.
+# DELIVERY RULE for any document (PPT/PDF/etc):
+#   1) host_file → get viewer_url
+#   2) send_email '{"to":"...","subject":"...","body":"<p>View it here: VIEWER_URL</p>","attachment":"/tmp/out.pptx"}'
+#   3) send_telegram '{"message":"Your presentation: VIEWER_URL"}'  + send_telegram_document '{"path":"/tmp/out.pptx"}'
+#   Always include the viewer_url link — recipients click it and SEE the slides directly (works on phones).
 
 # Browser CDP (logged-in Chrome)
 python tools.py cdp_action '{"action":"navigate","url":"https://..."}'
