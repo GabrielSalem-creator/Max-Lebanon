@@ -881,7 +881,8 @@ function _detectLang(text){
 
 let _ttsMuted = false;
 let _lastSpokeAt = 0;
-function maxIsSpeaking(){ return _synth.speaking || (Date.now()-_lastSpokeAt)<800; }
+let _lastSpokenText = '';   // what MAX is currently saying — so it won't interrupt itself
+function maxIsSpeaking(){ if(_ttsMuted) return false; return _synth.speaking || (Date.now()-_lastSpokeAt)<800; }
 
 function enqueueTTS(text){
   if(!ttsOn || _ttsMuted) return;
@@ -902,8 +903,9 @@ function enqueueTTS(text){
   utt.pitch  = 1.0;
   utt.volume = 1.0;
   if(voice) utt.voice = voice;
+  _lastSpokenText = (_lastSpokenText + ' ' + clean).slice(-400).toLowerCase();
   utt.onstart = ()=>{ _lastSpokeAt = Date.now(); };
-  utt.onend   = ()=>{ _lastSpokeAt = Date.now(); };
+  utt.onend   = ()=>{ _lastSpokeAt = Date.now(); _lastSpokenText = ''; };
   _synth.speak(utt);
 }
 
@@ -971,8 +973,6 @@ function _buildRecognizer(){
   let finalT = '', silTimer = null;
 
   recog.onresult = e => {
-    if(maxIsSpeaking()){ finalT=''; return; }
-
     let interim = '';
     for(let i=e.resultIndex;i<e.results.length;i++){
       if(e.results[i].isFinal) finalT += e.results[i][0].transcript;
@@ -980,6 +980,23 @@ function _buildRecognizer(){
     }
     const full = (finalT+interim).trim();
     const low  = full.toLowerCase();
+
+    // ── BARGE-IN: while MAX is talking, saying "MAX" cuts the voice instantly ──
+    // (Only stop speech — the task/text keeps running. Won't trigger on MAX saying
+    //  its own name, because we ignore wake words that are in MAX's own speech.)
+    if(maxIsSpeaking()){
+      if(_hasWakeWord(low) && !_hasWakeWord(_lastSpokenText)){
+        stopTTS();                                   // cut the audio now
+        _ttsMuted = true;                            // stop the backend sending more speech
+        if(ws && ws.readyState===1) ws.send(JSON.stringify({type:'mute_tts'}));
+        _lastSpokeAt = 0; _lastSpokenText = '';      // clear the speaking guard
+        finalT = '';
+        activateWake();                              // listen for the next command
+      } else {
+        finalT = '';                                 // MAX hearing itself — ignore
+      }
+      return;
+    }
 
     if(!wakeMode && _hasWakeWord(low)){
       const after = _stripWakeWord(full);
